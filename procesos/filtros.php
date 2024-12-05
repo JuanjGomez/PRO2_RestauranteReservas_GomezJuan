@@ -10,11 +10,11 @@
                 // Consulta para ver lo sumativo de lo que ha hecho camarero
                 $sqlOrden = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                             FROM historial h 
-                            INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                            INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                             INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                             INNER JOIN sala s ON s.id_sala = m.id_sala 
                             INNER JOIN tipo_sala tp ON tp.id_tipoSala = s.id_tipoSala 
-                            WHERE c.id_camarero = :id_camarero 
+                            WHERE c.id_usuario = :id_usuario 
                             ORDER BY h.hora_inicio $orden";
                 $stmtResultado = $conn->prepare($sqlOrden);
                 $stmtResultado->bindParam(":id_camarero", $camarero, PDO::PARAM_INT);
@@ -22,7 +22,7 @@
                 // Consulta para ordenar por orden de hora_inicio la tabla
                 $sqlOrden = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                                 FROM historial h 
-                                INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                                INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                                 INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                                 INNER JOIN sala s ON s.id_sala = m.id_sala 
                                 INNER JOIN tipo_sala tp ON tp.id_tipoSala = s.id_tipoSala 
@@ -33,13 +33,13 @@
             //Recoge lo que viene por GET el id de camarero
             $camarero = htmlspecialchars(trim($_GET['camarero']));
             // Consulta para ver todos las ocupaciones que ha hecho un camarero
-            $sqlCamarero = "SELECT c.id_camarero, c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
+            $sqlCamarero = "SELECT c.id_usuario, c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                             FROM historial h 
-                            INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                            INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                             INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                             INNER JOIN sala s ON s.id_sala = m.id_sala 
                             INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
-                            WHERE c.id_camarero = :id_camarero";
+                            WHERE c.id_usuario = :id_camarero";
             $stmtResultado = $conn->prepare($sqlCamarero);
             $stmtResultado->bindParam(":id_camarero", $camarero, PDO::PARAM_INT);
             $_SESSION['camarero'] = htmlspecialchars_decode($_GET['camarero']); // Se guarda para que sea sumativo
@@ -52,7 +52,7 @@
                 // Consulta para ver lo sumativo de lo que ha hecho camarero
                 $sqlTipoSala = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin, tp.id_tipoSala 
                                 FROM historial h 
-                                INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                                INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                                 INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                                 INNER JOIN sala s ON s.id_sala = m.id_sala 
                                 INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
@@ -64,11 +64,11 @@
                 $camarero = htmlspecialchars(trim($_SESSION['camarero']));
                 $sqlTipoSala = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin, tp.id_tipoSala 
                                 FROM historial h 
-                                INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                                INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                                 INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                                 INNER JOIN sala s ON s.id_sala = m.id_sala 
                                 INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
-                                WHERE tp.id_tipoSala = :id_tipoSala AND c.id_camarero = :id_camarero";
+                                WHERE tp.id_tipoSala = :id_tipoSala AND c.id_usuario = :id_camarero";
                 $stmtResultado = $conn->prepare($sqlTipoSala);
                 $stmtResultado->bindParam(":id_tipoSala", $tipoSala, PDO::PARAM_INT);
                 $stmtResultado->bindParam(":id_camarero", $camarero, PDO::PARAM_INT);
@@ -86,7 +86,7 @@
                 // Recoge todos los datos de las ocupas y desocupas de cada sala
                 $sqlSala = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin, s.id_sala 
                             FROM historial h 
-                            INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                            INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                             INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                             INNER JOIN sala s ON s.id_sala = m.id_sala 
                             INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
@@ -99,11 +99,11 @@
                 $camarero = htmlspecialchars(trim($_SESSION['camarero']));
                 $sqlSala = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin, s.id_sala 
                             FROM historial h 
-                            INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                            INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                             INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                             INNER JOIN sala s ON s.id_sala = m.id_sala 
                             INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
-                            WHERE tp.id_tipoSala = :id_tipoSala AND s.id_sala = :id_sala AND c.id_camarero = :id_camarero";
+                            WHERE tp.id_tipoSala = :id_tipoSala AND s.id_sala = :id_sala AND c.id_usuario = :id_camarero";
                 $stmtResultado = $conn->prepare($sqlSala);
                 $stmtResultado->bindParam(":id_tipoSala", $salaID, PDO::PARAM_INT);
                 $stmtResultado->bindParam(":id_sala", $id_sala, PDO::PARAM_INT);
@@ -116,7 +116,7 @@
                 // Consulta para ver todas las mesas
                 $sqlMesa = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                             FROM historial h 
-                            INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                            INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                             INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                             INNER JOIN sala s ON s.id_sala = m.id_sala 
                             INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
@@ -130,7 +130,7 @@
                 // Consulta para ver todas las mesas
                 $sqlMesaS = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin, s.id_sala 
                             FROM historial h 
-                            INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                            INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                             INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                             INNER JOIN sala s ON s.id_sala = m.id_sala 
                             INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
@@ -146,7 +146,7 @@
                 // Consulta para obtener los datos según el tiempo
                 $sqlTiempo = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                                 FROM historial h 
-                                INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                                INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                                 INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                                 INNER JOIN sala s ON s.id_sala = m.id_sala 
                                 INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
@@ -162,14 +162,14 @@
                 $camarero = htmlspecialchars(trim($_SESSION['camarero']));
                 $sqlTiempo = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                                 FROM historial h 
-                                INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                                INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                                 INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                                 INNER JOIN sala s ON s.id_sala = m.id_sala 
                                 INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
                                 WHERE ((h.hora_inicio 
                                 BETWEEN DATE_SUB(:tiempo1, INTERVAL 24 HOUR) AND DATE_ADD(:tiempo2, INTERVAL 24 HOUR)) 
                                 OR (h.hora_fin BETWEEN DATE_SUB(:tiempo3, INTERVAL 24 HOUR) AND DATE_ADD(:tiempo4, INTERVAL 24 HOUR))) 
-                                AND (c.id_camarero = :id_camarero)";
+                                AND (c.id_usuario = :id_camarero)";
                 $stmtResultado = $conn->prepare($sqlTiempo);
                 $stmtResultado->bindParam(":tiempo1", $tiempo);
                 $stmtResultado->bindParam(":tiempo2", $tiempo);
@@ -181,7 +181,7 @@
             $busqueda = htmlspecialchars(trim($_GET['query']));
             $sqlBusqueda = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                             FROM historial h 
-                            INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                            INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                             INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                             INNER JOIN sala s ON s.id_sala = m.id_sala 
                             INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala 
@@ -196,7 +196,7 @@
             // Consulta para obtener todos los datos de la base de datos
             $sql = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                     FROM historial h 
-                    INNER JOIN camarero c ON h.id_camarero = c.id_camarero 
+                    INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 
                     INNER JOIN mesa m ON m.id_mesa = h.id_mesa 
                     INNER JOIN sala s ON s.id_sala = m.id_sala 
                     INNER JOIN tipo_sala tp On tp.id_tipoSala = s.id_tipoSala";

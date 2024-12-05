@@ -2,7 +2,7 @@
 session_start();
 include_once './conexion.php';
 
-if (isset($_SESSION['id_camarero'])) {
+if (isset($_SESSION['id']) && ($_SESSION['rol'] == "Camarero" || $_SESSION['rol'] == "Gerente")) {
     // Escapar variables de entrada
     $id_tipoSala = htmlspecialchars(trim($_POST['id_tipoSala']));
     $idSala = htmlspecialchars(trim($_POST['id_sala']));

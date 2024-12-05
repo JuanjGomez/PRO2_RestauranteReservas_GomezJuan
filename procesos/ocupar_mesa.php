@@ -2,9 +2,9 @@
 session_start();
 include_once './conexion.php';
 
-if (isset($_SESSION['id_camarero'])) {
+if (isset($_SESSION['id']) && ($_SESSION['rol'] == 'Gerente' || $_SESSION['rol'] == 'Camarero')) {
     $id_tipoSala = htmlspecialchars(trim($_POST['id_tipoSala']));
-    $idCamarero = htmlspecialchars(trim($_SESSION['id_camarero']));
+    $idCamarero = htmlspecialchars(trim($_SESSION['id']));
     $idSala = htmlspecialchars(trim($_POST['id_sala']));
     $idMesa = htmlspecialchars(trim($_POST['id_mesa']));
     $num_sillas = htmlspecialchars(trim($_POST['num_sillas']));
@@ -45,7 +45,7 @@ if (isset($_SESSION['id_camarero'])) {
             $stmtMesa->execute();
 
             // Insertar en el historial de la mesa ocupada
-            $sqlOcupat = "INSERT INTO historial (id_camarero, id_mesa, hora_inicio) VALUES (:id_camarero, :id_mesa, NOW())";
+            $sqlOcupat = "INSERT INTO historial (id_usuario, id_mesa, hora_inicio) VALUES (:id_camarero, :id_mesa, NOW())";
             $stmtOcupat = $conn->prepare($sqlOcupat);
             $stmtOcupat->bindParam(":id_camarero", $idCamarero, PDO::PARAM_INT);
             $stmtOcupat->bindParam(":id_mesa", $idMesa, PDO::PARAM_INT);

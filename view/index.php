@@ -3,7 +3,7 @@ session_start();
 include '../procesos/conexion.php';
 
 // Verificamos si el usuario ya está autenticado
-if (isset($_SESSION['id_camarero'])) {
+if (isset($_SESSION['id']) && ($_SESSION['rol'] == 'Gerente' || $_SESSION['rol'] == 'Camarero')) {
     try {
         // Consulta para obtener las salas
         $query = "SELECT * FROM tipo_sala";

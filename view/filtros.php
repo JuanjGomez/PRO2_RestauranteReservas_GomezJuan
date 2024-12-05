@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['id_camarero'])) {
+if (!isset($_SESSION['id']) && $_SESSION['rol'] !== 'Gerente') {
   header('Location: ../index.php');
   exit();
 }
@@ -69,11 +69,15 @@ $filtrarSalas = isset($_SESSION['tipoSala']);
             <ul class="dropdown-menu">
               <?php
                 try{
-                  $sqlCamarero = "SELECT * FROM camarero";
+                  $camareroHistorial = 'Camarero';
+                  $gerente = htmlspecialchars(trim($_SESSION['rol']));
+                  $sqlCamarero = "SELECT * FROM usuarios u INNER JOIN roles r ON u.id_rol = r.id_rol WHERE nombre_rol = :camarero AND nombre_rol = :gerente";
                   $stmt = $conn->prepare($sqlCamarero);//Ejecuta la consulta
+                  $stmt->bindParam(':camarero', $camareroHistorial, PDO::PARAM_STR);
+                  $stmt->bindParam(':gerente', $gerente, PDO::PARAM_STR);
                   $stmt->execute();
                   while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)){
-                    $idCamarero = htmlspecialchars($fila['id_camarero']);
+                    $idCamarero = htmlspecialchars($fila['id_usuario']);
                     $nomCamarero = htmlspecialchars($fila['nombre']);
                     echo "<li><a class='dropdown-item enlace-barra' href='filtros.php?camarero={$idCamarero}'>$nomCamarero</a></li>";
                   }

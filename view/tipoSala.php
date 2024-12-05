@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once '../procesos/conexion.php';
-if (!isset($_SESSION['id_camarero'])) {
+if (!isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero'])) {
     header('Location: ../index.php');
     exit();
 }
@@ -63,12 +63,15 @@ if (!isset($_POST['id_tipoSala'])) {
         foreach ($result as $fila) {
             echo "<div class='col-md-$nuevoNumero mb-4'>"; // Clase Bootstrap para cuatro columnas
             echo "<div class='container_img grow'>";
+            $imagen = $fila['imagen_sala'];
             // echo "<a href='mesa.php?id=" . $fila['id_tipoSala'] . "'><img src='../img/" . $fila['nombre_sala'] . ".jpg' alt=''></a>";
             ?>
                     <form class="formImg" action="mesa.php" method="post">
                         <input type="hidden" name="id_sala"  value="<?php echo $fila['id_sala'] ?>">
                         <input type="hidden" name="id_tipoSala"  value="<?php echo $fila['id_tipoSala'] ?>">
-                        <button class="botonImg" type="submit"><img src="../img/<?php echo $fila['nombre_sala'] ?>.jpg" alt=""></button>
+                        <button class="botonImg" type="submit">
+                            <img src="../<?php echo $imagen ?>" alt="<?php echo $fila['nombre_sala'] ?>">
+                        </button>
                         <!-- <input type="submit" value="Enviar"> -->
                     </form>
                     <?php

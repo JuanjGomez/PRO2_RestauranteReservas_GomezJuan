@@ -16,11 +16,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if (password_verify($pwd, $fila['password'])) {
                 // Iniciamos la sesión y almacenamos los datos del camarero
                 session_start();
-                $_SESSION['id_camarero'] = $fila['id_camarero'];
+                $_SESSION['id'] = $fila['id_usuario'];
                 $_SESSION['nombre'] = $fila['nombre'];
                 $_SESSION['usuario'] = $fila['usuario'];
+                $_SESSION['rol'] = $fila['nombre_rol'];
                 $_SESSION['success'] = true;
-                header('Location: ../view/index.php');
+                if($_SESSION['rol'] == 'Gerente'){
+                    header('Location: ../view/admin/viewGerente.php');
+                } else if($_SESSION['rol'] == 'Camarero'){
+                    header('Location:../view/index.php');
+                } else if($_SESSION['rol'] == 'Mantenimiento'){
+                    header('Location:../view/mantenimiento/viewMantenimiento.php');
+                } else {
+                    header('Location:../index.php?error=5');
+                }
                 die();
             } else {
                 header('Location: ../index.php?error=5');
