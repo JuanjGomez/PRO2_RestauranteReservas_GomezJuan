@@ -4,11 +4,12 @@
         header('Location: ../../index.php');
         exit();
     }
-    if($_SERVER['REQUEST_METHOD'] !== 'POST'){
+    if($_SERVER['REQUEST_METHOD'] !== 'GET'){
         header('Location: gestionarUsuarios.php');
         exit();
     }
-    $user = trim($_POST['id']);
+    require_once '../../procesos/conexion.php';
+    $user = trim($_GET['id']);
     $sqlEdit = 'SELECT * FROM usuarios u 
                 INNER JOIN roles r ON u.id_rol = r.id_rol 
                 WHERE u.id_usuario = :id_usuario';
@@ -32,9 +33,9 @@
         <form method="POST" action="../../procesos/editarUser.php">
             <input type="hidden" name="id" value="<?php echo $user; ?>">
             <label for="usuario">Nombre usuario: 
-                <input type="text" name="username" id="username" value="<?php echo $fila['nombre']; ?>">
+                <input type="text" name="username" id="username" value="<?php echo $fila['nombre']; ?>" readonly>
             </label>
-            <p id="errorUser" class="error"></p>
+            <p></p>
             <label for="nombre">Nombre: 
                 <input type="text" name="nombre" id="nombre" value="<?php echo $fila['nombre']; ?>">
             </label>
@@ -44,13 +45,13 @@
             </label>
             <p id="errorApellido" class="error"></p>
             <label for="dni">DNI: 
-                <input type="text" name="dni" id="dni" value="<?php echo $fila['dni']; ?>">
+                <input type="text" name="dni" id="dni" value="<?php echo $fila['dni']; ?>" readonly>
             </label>
-            <p id="errorDni" class="error"></p></p>
+            <p></p>
             <label for="email">Email: 
-                <input type="text" name="email" id="email" value="<?php echo $fila['email']; ?>">
+                <input type="text" name="email" id="email" value="<?php echo $fila['email']; ?>" readonly>
             </label>
-            <p id="errorEmail" class="error"></p>
+            <p></p>
             <label for="telefono">Telefono: 
                 <input type="text" name="telefono" id="telefono" value="<?php echo $fila['telefono'];?>">
             </label>
@@ -79,11 +80,11 @@
                         $stmtRoles = $conn->prepare($sqlRoles);
                         $stmtRoles->execute();
                         while($rol = $stmtRoles->fetch(PDO::FETCH_ASSOC)){
-                            echo '<option value="'.$rol['rol'].'"';
-                            if($rol['rol'] === $fila['rol']){
+                            echo '<option value="'.$rol['id_rol'].'"';
+                            if($rol['id_rol'] === $fila['id_rol']){
                                 echo'selected';
                             }
-                            echo '>'.$rol['rol'].'</option>';
+                            echo '>'.$rol['nombre_rol'].'</option>';
                         }
                     ?>
                 </select>

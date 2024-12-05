@@ -10,7 +10,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bienvenido <?php echo $_SESSION['nombre']; ?>!</title>
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../../css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" integrity="sha256-qWVM38RAVYHA4W8TAlDdszO1hRaAq0ME7y2e9aab354=" crossorigin="anonymous">
 </head>
@@ -36,13 +36,13 @@
         <div class="row">
             <div class="col-md-4 mb-4">
                 <div class="container_img grow">
-                    <form class="formImg" action="gestionarUsuarios.php" method="GET">
+                    <form class="formImg" action="gestionarUsuarios.php" method="POST">
                         <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
                     </form>
-                    <form class="formImg" action="gestionarSalas.php" method="GET">
+                    <form class="formImg" action="gestionarSalas.php" method="POST">
                         <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
                     </form>
-                    <form class="formImg" action="gestionarMesas.php" method="GET">
+                    <form class="formImg" action="gestionarMesas.php" method="POST">
                         <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
                     </form>
                 </div>

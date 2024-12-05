@@ -1,81 +1,30 @@
-document.getElementById("username").onblur = function validaUsuario(){
-    let usuario = this.value.trim();
-    let errorUser = ""
-    if(usuario.length == 0 || usuario == null || /^\s+$/.test(usuario)){
-        errorUser = "El campo no puede estar vacio."
-    } else if(usuario.length > 2){
-        errorUser = "El usuario debe tener mas 2 caracteres."
-    } else if(usuario.length < 45){
-        errorUser = "El usuario no puede tener mas 45 caracteres."
-    }
-    document.getElementById("errorUser").innerHTML = errorUser
-    validaForm()
-}
-document.getElementById("nombre").onblur = function validaNombre(){
+document.getElementById("nombre").oninput = function validaNombre(){
     let nombre = this.value.trim()
     let errorNombre = ""
     if(nombre.length == 0 || nombre == null || /^\s+$/.test(nombre)){
         errorNombre = "El campo no puede estar vacio."
-    } else if(nombre.length > 2){
+    } else if(nombre.length < 2){
         errorNombre = "El nombre debe tener mas 2 caracteres."
-    } else if(nombre.length < 45){
+    } else if(nombre.length > 45){
         errorNombre = "El nombre no debe tener mas de 45 caracteres."
     }
     document.getElementById("errorNombre").innerHTML = errorNombre
     validaForm()
 }
-document.getElementById("apellido").onblur = function validaApellido(){
+document.getElementById("apellido").oninput = function validaApellido(){
     let apellido = this.value.trim()
     let errorApellido = ""
     if(apellido.length == 0 || apellido == null || /^\s+$/.test(apellido)){
         errorApellido = "El campo no puede estar vacio."
-    } else if(apellido.length > 2){
+    } else if(apellido.length < 2){
         errorApellido = "El apellido debe tener mas 2 caracteres."
-    } else if(apellido.length < 50){
+    } else if(apellido.length > 50){
         errorApellido = "El apellido no debe tener mas 50 caracteres."
     }
     document.getElementById("errorApellido").innerHTML = errorApellido
     validaForm();
 }
-document.getElementById("dni").onblur = function validaDNI(){
-    let dni = this.value.trim()
-    let errorDni = ""
-    if(dni.length == 0 || dni == null || /^\s+$/.test(dni)){
-        errorDni = "El campo no puede estar vacio."
-    } else if(!calculoDNI(dni)){
-        errorDni = "El DNI no es valido."
-    } else if(!letraDni(dni)){
-        errorDni = "La letra del DNI no coincide con el numero."
-    }
-    function calculoDNI(dni){
-        let formatoDni = /^\d{8}[A-Za-z]$/
-        return formatoDni.test(dni)
-    }
-    function letraDni(dni){
-        let letras = ['T', 'R', 'W', 'A', 'G', 'M', 'Y', 'F', 'P', 'D', 'X', 'B', 'N', 'J', 'Z', 'S', 'Q', 'V', 'H', 'L', 'C', 'K', 'E', 'T']
-        let numeroDNI = dni.substring(0,8)
-        let letraDNI = dni.charAt(8).toUpperCase()
-        let letraExtraida = letras[numeroDNI % 23]
-        return letraDNI == letraExtraida
-    }
-    document.getElementById("errorDni").innerHTML = errorDni
-    validaForm()
-}
-document.getElementById("email").onblur = function validaEmail(){
-    let email = this.value.trim()
-    let errorEmail = ""
-    if(email.length == 0 || email == null || /^\s+$/.test(email)) {
-        errorEmail = "El campo email no puede estar vacío."
-    } else if(!emailValido(email)) {
-        errorEmail = "El email no es válido."
-    }
-    function emailValido(email) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-    document.getElementById("errorEmail").innerHTML = errorEmail
-    validaForm()
-}
-document.getElementById("telefono").onblur = function validaTelefono(){
+document.getElementById("telefono").oninput = function validaTelefono(){
     let telefono = this.value.trim()
     let errorTelefono = ""
     if(telefono.length == 0 || telefono == null || /^\s+$/.test(telefono)) {
@@ -89,7 +38,7 @@ document.getElementById("telefono").onblur = function validaTelefono(){
     document.getElementById("errorTelefono").innerHTML = errorTelefono
     validaForm()
 }
-document.getElementById("direccion").onblur  = function validaDireccion() {
+document.getElementById("direccion").oninput = function validaDireccion() {
     let direccion = this.value.trim()
     let errorDireccion = ""
     if(direccion.length == 0 || direccion == null || /^\s+$/.test(direccion)) {
@@ -102,7 +51,7 @@ document.getElementById("direccion").onblur  = function validaDireccion() {
     document.getElementById("errorDireccion").innerHTML = errorDireccion
     validaForm()
 }
-document.getElementById("nacimiento").onblur = function validaDireccion() {
+document.getElementById("nacimiento").onmouseleave = function validaNacimiento() {
     let fecha = this.value.trim()
     let errorNacimiento = ""
     if(fecha.length == 0 || fecha == null || /^\s+$/.test(fecha)) {
@@ -123,27 +72,27 @@ document.getElementById("nacimiento").onblur = function validaDireccion() {
     document.getElementById("errorNacimiento").innerHTML = errorFecha
     validaForm()
 }
-document.getElementById("pwd").onblur = function validaPwd(){
-    let pwd = this.value.trim()
-    let errorPwd = ""
-    if(pwd.length == 0 || pwd == null || /^\s+$/.test(pwd)){
-        errorPwd = "El campo no puede estar vacio."
-    } else if(!patron(pwd)){
-        errorPwd = "El campo necesita, 6 letras con mayúscula, minúscula y número."
+document.getElementById("pwd").oninput = function validaPwd(){
+    let pwd = this.value.trim();
+    let errorPwd = "";
+    if (pwd !== "") {
+        if (!patron(pwd)) {
+            errorPwd = "El campo necesita 6 letras con mayúscula, minúscula y número."
+        }
     }
-    function patron(pwd){
+    function patron(pwd) {
         let patron = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}/
         return patron.test(pwd)
     }
     document.getElementById("errorPwd").innerHTML = errorPwd
     validaForm()
 }
-document.getElementById("rPwd").onblur = function validaRepetirPwd() {
+document.getElementById("rPwd").oninput = function validaRepetirPwd() {
     let pwd = document.getElementById("pwd").value.trim()
     let rPwd = this.value.trim()
     let errorRPwd = ""
-    if(pwd !== rPwd){
-        errorRPwd = "Las contraseñas no coinciden."
+    if (pwd !== "" && pwd !== rPwd) {
+        errorRPwd = "Las contraseñas no coinciden.";
     }
     document.getElementById("errorRpwd").innerHTML = errorRPwd
     validaForm()
@@ -156,4 +105,27 @@ document.getElementById("rol").onmouseleave = function validaRol() {
     }
     document.getElementById("errorRol").innerHTML = errorRol
     validaForm()
+}
+function validaForm() {
+    const errores = [
+        document.getElementById("errorNombre").innerHTML,
+        document.getElementById("errorApellido").innerHTML,
+        document.getElementById("errorTelefono").innerHTML,
+        document.getElementById("errorDireccion").innerHTML,
+        document.getElementById("errorNacimiento").innerHTML,
+        document.getElementById("errorPwd").innerHTML,
+        document.getElementById("errorRpwd").innerHTML,
+        document.getElementById("errorRol").innerHTML
+    ]
+    const campos = [
+        document.getElementById("nombre").value.trim(),
+        document.getElementById("apellido").value.trim(),
+        document.getElementById("telefono").value.trim(),
+        document.getElementById("direccion").value.trim(),
+        document.getElementById("nacimiento").value.trim(),
+        document.getElementById("rol").value
+    ]
+    const camposVacios = campos.some(campo => campo == "") || (pwd !== "" && rPwd === ""); //Si escribe en pwd, rPwd no puede estar vacio
+    const hayErrores = errores.some(error => error !== "")
+    document.getElementById("boton").disabled = camposVacios || hayErrores
 }
