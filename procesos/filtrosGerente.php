@@ -31,22 +31,6 @@
             if(isset($_SESSION['empleado'])){
                 $stmtResultado->bindParam(':id_rol', $_SESSION['empleado'], PDO::PARAM_INT);
             }
-        } else if(isset($_GET['query'])) { 
-            $query = trim($_GET['query']);
-            // Consulta de datos por la barra de busqueda
-            $sqlQuery = 'SELECT * FROM usuarios u 
-                        INNER JOIN roles r ON u.id_rol = r.id_rol 
-                        WHERE u.usuario LIKE :query1 OR u.nombre LIKE :query2 OR u.apellido LIKE :query3 OR u.email LIKE :query4 
-                        OR r.nombre_rol LIKE :query5 OR u.direccion LIKE :query6 OR u.telefono';
-            $stmtResultado = $conn->prepare($sqlQuery);
-            $queryConcatenado = "%$query%";
-            $stmtResultado->bindParam(':query1', $queryConcatenado, PDO::PARAM_STR);
-            $stmtResultado->bindParam(':query2', $queryConcatenado, PDO::PARAM_STR);
-            $stmtResultado->bindParam(':query3', $queryConcatenado, PDO::PARAM_STR);
-            $stmtResultado->bindParam(':query4', $queryConcatenado, PDO::PARAM_STR);
-            $stmtResultado->bindParam(':query5', $queryConcatenado, PDO::PARAM_STR);
-            $stmtResultado->bindParam(':query6', $queryConcatenado, PDO::PARAM_STR);
-            $_SESSION['query'] = htmlspecialchars(trim($query));
         } else if(isset($_GET['fechaNacimiento'])){
             // Consulta por buscar fecha de nacimiento general y sumativo
             $fechaNacimiento = htmlspecialchars(trim($_GET['fechaNacimiento']));
@@ -79,6 +63,28 @@
             if(isset($_SESSION['empleado'])){
                 $stmtResultado->bindParam(':id_rol', $_SESSION['empleado'], PDO::PARAM_INT);
             }
+        } else if(isset($_GET['query'])) { 
+            $query = trim($_GET['query']);
+            // Consulta de datos por la barra de busqueda
+            $sqlQuery = 'SELECT * FROM usuarios u 
+                        INNER JOIN roles r ON u.id_rol = r.id_rol 
+                        WHERE u.usuario LIKE :query1 
+                        OR u.nombre LIKE :query2 
+                        OR u.apellido LIKE :query3 
+                        OR u.email LIKE :query4 
+                        OR r.nombre_rol LIKE :query5 
+                        OR u.direccion LIKE :query6 
+                        OR u.telefono LIKE :query7';
+            $stmtResultado = $conn->prepare($sqlQuery);
+            $queryConcatenado = "%$query%";
+            $stmtResultado->bindParam(':query1', $queryConcatenado, PDO::PARAM_STR);
+            $stmtResultado->bindParam(':query2', $queryConcatenado, PDO::PARAM_STR);
+            $stmtResultado->bindParam(':query3', $queryConcatenado, PDO::PARAM_STR);
+            $stmtResultado->bindParam(':query4', $queryConcatenado, PDO::PARAM_STR);
+            $stmtResultado->bindParam(':query5', $queryConcatenado, PDO::PARAM_STR);
+            $stmtResultado->bindParam(':query6', $queryConcatenado, PDO::PARAM_STR);
+            $stmtResultado->bindParam(':query7', $queryConcatenado, PDO::PARAM_STR);
+            $_SESSION['query'] = htmlspecialchars(trim($query));
         } else {
             $sqlUsarios = "SELECT * FROM usuarios u 
                             INNER JOIN roles r ON u.id_rol = r.id_rol";

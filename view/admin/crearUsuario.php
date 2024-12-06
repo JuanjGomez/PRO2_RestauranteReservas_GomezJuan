@@ -93,15 +93,20 @@
                     <select name="rol" id="rol">
                         <option value="" selected-disabled>Selecciona un rol: </option>
                         <?php
-                            require_once '../../procesos/conexion.php';
-                            $query = "SELECT * FROM roles";
-                            $stmt = $conn->prepare($query);
-                            $stmt->execute();
-                            $roles = $stmt->fetchAll();
-                            foreach ($roles as $rol) {
-                                echo '<option value="' . $rol['id_rol'] . '" ' . 
-                                    (isset($_POST['rol']) && $_POST['rol'] == $rol['id_rol'] ? 'selected' : '') . '>' . 
-                                    $rol['nombre_rol'] . '</option>';
+                            try{
+                                require_once '../../procesos/conexion.php';
+                                $query = "SELECT * FROM roles";
+                                $stmt = $conn->prepare($query);
+                                $stmt->execute();
+                                $roles = $stmt->fetchAll();
+                                foreach ($roles as $rol) {
+                                    echo '<option value="' . $rol['id_rol'] . '" ' . 
+                                        (isset($_POST['rol']) && $_POST['rol'] == $rol['id_rol'] ? 'selected' : '') . '>' . 
+                                        $rol['nombre_rol'] . '</option>';
+                                }
+                            } catch(PDOException $e){
+                                echo "Error: ". $e->getMessage();
+                                die();
                             }
                         ?>
                     </select>

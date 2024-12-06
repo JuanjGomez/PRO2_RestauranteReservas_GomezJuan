@@ -9,8 +9,8 @@
         exit();
     }
     // Sweet Alert para saber si se creo un usario correctamente
-    $alertaCrearUsuario = isset($_SESSION['crearUsuario']) && $_SESSION['crearUsuario'];
-    unset($_SESSION['crearUsuario']);
+    $successInsertSala = isset($_SESSION['successInsertSala']) && $_SESSION['successInsertSala'];
+    unset($_SESSION['successInsertSala']);
     // Sweet Alert para saber si se edito un usuario correctamente
     $alertaEditarUsuario = isset($_SESSION['editarUsuario']) && $_SESSION['editarUsuario'];
     unset($_SESSION['editarUsuario']);
@@ -18,7 +18,7 @@
     $alertaEliminarUsuario = isset($_SESSION['eliminarUsuario']) && $_SESSION['eliminarUsuario'];
     unset($_SESSION['eliminarUsuario']);
     require_once '../../procesos/conexion.php';
-    require_once '../../procesos/filtrosGerente.php'
+    require_once '../../procesos/filtrosSalas.php'
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,15 +64,15 @@
             </div>
         </nav>
     </header>
-    <h1>Gestionar Usuarios</h1>
+    <h1>Gestionar Salas</h1>
     <div id="divReiniciar">
-        <a href="borrarSesionesAdmin.php?salir=1">
+        <a href="borrarSesionesSales.php?salir=1">
             <button class="btn btn-danger">Volver</button>
         </a>
-        <a href="crearUsuario.php">
-            <button class="btn btn-success">Crear Usuario</button>
+        <a href="crearSala.php">
+            <button class="btn btn-success">Crear Sala</button>
         </a>
-        <a href="borrarSesionesAdmin.php?borrar=5">
+        <a href="borrarSesionesSales.php?borrar=5">
             <button class="btn btn-warning">Reiniciar Filtros</button>
         </a>
     </div>
@@ -91,7 +91,7 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Roles</a>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tipos salas</a>
                     <ul class="dropdown-menu">
                         <?php
                             try{
@@ -155,41 +155,30 @@
     </div>
     </nav>
     <?php
-        if($resultados){
+        if($resultadosSalas){
             echo "<table>";
             echo "<thead>";
             echo "<tr>";
-            echo "<th>Usuario</th>";
-            echo "<th>Apellido</th>";
-            echo "<th>DNI</th>";
-            echo "<th>Telefono</th>";
-            echo "<th>Correo</th>";
-            echo "<th>Rol</th>";
+            echo "<th>Nombre</th>";
+            echo "<th>Tipo Sala</th>";
+            echo "<th>Imagen</th>";
             echo "<th>Acciones</th>";
             echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
-            foreach($resultados as $fila){
-                $idUsuario = htmlspecialchars($fila['id_usuario']);
-                $nombreUsuario = htmlspecialchars($fila['usuario']);
-                $apellidoUsuario = htmlspecialchars($fila['apellido']);
-                $dni = htmlspecialchars($fila['dni']);
-                $email = htmlspecialchars($fila['email']);
-                $telefono = htmlspecialchars($fila['telefono']);
-                $rol = htmlspecialchars($fila['nombre_rol']);
+            foreach($resultadosSalas as $fila){
+                $idSala = htmlspecialchars($fila['id_sala']);
+                $nombreSala = htmlspecialchars($fila['nombre_sala']);
+                $imagenSala = htmlspecialchars($fila['imagen_sala']);
+                $tipoSala = htmlspecialchars($fila['tipo_sala']);
                 echo "<tr>
-                    <td>$nombreUsuario</td>
-                    <td>$apellidoUsuario</td>
-                    <td>$dni</td>
-                    <td>$telefono</td>
-                    <td>$email</td>
-                    <td>$rol</td>
+                    <td>$nombreSala</td>
+                    <td>$tipoSala</td>
+                    <td class='tabla-imagen'><img src='../../$imagenSala'></td>
                     <td>
-                        <a href='editarUsuario.php?id=$idUsuario' class='btn btn-warning'>Editar</a>";
-                        if($_SESSION['id'] !== $idUsuario){
-                        echo "<a href='#' onclick='confirmarEliminacion($idUsuario)' class='btn btn-danger'>Eliminar</a>";
-                        }
-                    "</td>
+                        <a href='editarUsuario.php?id=$idSala' class='btn btn-warning'>Editar</a>
+                        <a href='#' onclick='confirmarEliminacion($idSala)' class='btn btn-danger'>Eliminar</a>
+                    </td>
                 </tr>";
             }
             echo "</tbody>";
@@ -201,10 +190,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js" integrity="sha256-1m4qVbsdcSU19tulVTbeQReg0BjZiW6yGffnlr/NJu4=" crossorigin="anonymous"></script>
     <script>
-        <?php if($alertaCrearUsuario) : ?> // Verifica si es true la alerta
+        <?php if($successInsertSala) : ?> // Verifica si es true la alerta
             Swal.fire({
-                title: 'Usuario creado con éxito',
-                icon: 'success',
+                title: 'Éxito!',
+                text: 'La sala fue creada correctamente.',
+                icon: 'success'
             })
         <?php endif;?>
         <?php if($alertaEditarUsuario) : ?>

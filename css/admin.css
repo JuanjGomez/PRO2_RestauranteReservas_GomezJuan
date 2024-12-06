@@ -35,6 +35,12 @@ form {
     display: flex;
 }
 
+.tabla-imagen img {
+    max-width: 100px; /* Limita el ancho máximo a 100px */
+    max-height: 100px; /* Limita la altura máxima a 100px */
+    object-fit: cover; /* Asegura que la imagen no se distorsione */
+}
+
 header {
     width: 100vw;
     height: 10vh;
