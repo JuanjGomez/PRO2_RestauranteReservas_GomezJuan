@@ -34,7 +34,7 @@
         $conn->commit();
         $_SESSION['eliminarUsuario'] = true;
         ?>
-        <form method="POST" name="formulario" action="../view/admin/gestionarUsuarios.php"></form>
+        <form method="GET" name="formulario" action="../view/admin/gestionarUsuarios.php"></form>
         <script> document.formulario.submit(); </script>
         <?php
         exit();

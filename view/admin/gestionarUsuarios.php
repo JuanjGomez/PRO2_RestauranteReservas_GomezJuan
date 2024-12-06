@@ -4,10 +4,13 @@
         header('Location: ../../index.php');
         exit();
     }
-    if($_SERVER['REQUEST_METHOD'] !== 'POST'){
+    if($_SERVER['REQUEST_METHOD'] !== 'GET'){
         header('Location: viewGerente.php');
         exit();
     }
+    // Sweet Alert para saber si se creo un usario correctamente
+    $alertaCrearUsuario = isset($_SESSION['crearUsuario']) && $_SESSION['crearUsuario'];
+    unset($_SESSION['crearUsuario']);
     // Sweet Alert para saber si se edito un usuario correctamente
     $alertaEditarUsuario = isset($_SESSION['editarUsuario']) && $_SESSION['editarUsuario'];
     unset($_SESSION['editarUsuario']);
@@ -15,13 +18,14 @@
     $alertaEliminarUsuario = isset($_SESSION['eliminarUsuario']) && $_SESSION['eliminarUsuario'];
     unset($_SESSION['eliminarUsuario']);
     require_once '../../procesos/conexion.php';
+    require_once '../../procesos/filtrosGerente.php'
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.min.css" integrity="sha256-qWVM38RAVYHA4W8TAlDdszO1hRaAq0ME7y2e9aab354=" crossorigin="anonymous">
     <script>
@@ -44,12 +48,15 @@
 <body class="body2">
     <header>
         <nav>
+            <div id="pequeño2">
+                <img src="../../img/logoRestaurante.png" alt="Logo" id="logo2">
+            </div>
             <div class="sesionIniciada">
                 <p>Usuario: <?php echo $_SESSION['nombre']?></p>
             </div>
             <div class="cerrarSesion">
                 <a id="bug" href="../filtros.php">
-                    <button type="submit" class="btn btn-light"  id="cerrarSesion">Filtrar</button>
+                    <button type="submit" class="btn btn-light"  id="cerrarSesion">Historial</button>
                 </a>
                 <a href="../../procesos/logout.php">
                     <button type="submit" class="btn btn-dark" id="cerrarSesion">Cerrar Sesión</button>
@@ -57,12 +64,15 @@
             </div>
         </nav>
     </header>
+    <h1>Gestionar Usuarios</h1>
     <div id="divReiniciar">
-        <a href="../procesos/borrarSesiones.php?salir=1">
+        <a href="borrarSesionesAdmin.php?salir=1">
             <button class="btn btn-danger">Volver</button>
         </a>
-        <strong><h2>Gestionar Usuarios</h2></strong>
-        <a href="../procesos/borrarSesiones.php?borrar=5">
+        <a href="crearUsuario.php">
+            <button class="btn btn-success">Crear Usuario</button>
+        </a>
+        <a href="borrarSesionesAdmin.php?borrar=5">
             <button class="btn btn-warning">Reiniciar Filtros</button>
         </a>
     </div>
@@ -74,28 +84,25 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orden de tiempo</a>
+                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orden Alfabetico</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="filtros.php?orden=asc">Más antiguo</a></li>
-                        <li><a class="dropdown-item" href="filtros.php?orden=desc">Último</a></li>
+                        <li><a class="dropdown-item" href="gestionarUsuarios.php?orden=asc">A - Z</a></li>
+                        <li><a class="dropdown-item" href="gestionarUsuarios.php?orden=desc">Z - A</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Camarero</a>
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Roles</a>
                     <ul class="dropdown-menu">
                         <?php
                             try{
-                                $camareroHistorial = 'Camarero';
-                                $gerente = htmlspecialchars(trim($_SESSION['rol']));
-                                $sqlCamarero = "SELECT * FROM usuarios u INNER JOIN roles r ON u.id_rol = r.id_rol WHERE nombre_rol = :camarero AND nombre_rol = :gerente";
-                                $stmt = $conn->prepare($sqlCamarero);//Ejecuta la consulta
-                                $stmt->bindParam(':camarero', $camareroHistorial, PDO::PARAM_STR);
-                                $stmt->bindParam(':gerente', $gerente, PDO::PARAM_STR);
-                                $stmt->execute();
-                                while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)){
-                                    $idCamarero = htmlspecialchars($fila['id_usuario']);
-                                    $nomCamarero = htmlspecialchars($fila['nombre']);
-                                    echo "<li><a class='dropdown-item enlace-barra' href='filtros.php?camarero={$idCamarero}'>$nomCamarero</a></li>";
+                                $sqlRol = "SELECT * FROM roles";
+                                $stmtRol = $conn->query($sqlRol);
+                                $stmtRol->execute();
+                                $roles = $stmtRol->fetchAll();
+                                foreach ($roles as $rol) {
+                                    $idRol = $rol['id_rol'];
+                                    $nombreRol = $rol['nombre_rol'];
+                                    echo "<li><a class='dropdown-item enlace-barra' href='gestionarUsuarios.php?rol={$idRol}'>$nombreRol</a></li>";
                                 }
                             } catch(PDOException $e){
                                 echo "Error: " . $e->getMessage();
@@ -105,97 +112,41 @@
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tipo de sala</a>
-                    <ul class="dropdown-menu">
-                        <?php
-                            try{
-                                $sqlNumTipoSala = 'SELECT * FROM tipo_Sala';
-                                $stmt = $conn->prepare($sqlNumTipoSala);//Ejecuta la consulta
-                                $stmt->execute();
-                                while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                                    $idTipoSala = htmlspecialchars($fila['id_tipoSala']);
-                                    $nombreTipoSala = htmlspecialchars($fila['tipo_sala']);
-                                    echo "<li><a class='dropdown-item enlace-barra' href='filtros.php?tipoSala={$idTipoSala}'>$nombreTipoSala</a>";
-                                }
-                            } catch(PDOException $e){
-                                echo "Error: " . $e->getMessage();
-                                die();
-                            }
-                        ?>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" <?php echo !isset($_SESSION['tipoSala']) ? 'disabled' : ''; ?> href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Salas</a>
-                    <ul class="dropdown-menu">
-                </li>
-                    <?php
-                        try{
-                            // Comprueba si se ha seleccionado un tipo de sala en la sesión
-                            if (isset($_SESSION['tipoSala'])) {
-                                $tipoSala = htmlspecialchars(trim($_SESSION['tipoSala']));
-                                $sqlSalas = "SELECT * FROM sala WHERE id_tipoSala = :id_tipoSala";
-                                $stmtSalas = $conn->prepare($sqlSalas);
-                                $stmtSalas->bindParam("id_tipoSala", $tipoSala, PDO::PARAM_INT);
-                                $stmtSalas->execute();
-                                while ($fila = $stmtSalas->fetch(PDO::FETCH_ASSOC)) {
-                                    $idSala = htmlspecialchars($fila['id_sala']);
-                                    $nombreSala = htmlspecialchars($fila['nombre_sala']);
-                                    echo "<li><a class='dropdown-item enlace-barra' href='filtros.php?sala={$idSala}'>$nombreSala</a></li>";
-                                }
-                            } else {
-                                echo "<li class='dropdown-item disabled'>Seleccione un tipo de sala primero</li>";
-                            }
-                        } catch (PDOException $e) {
-                            echo "Error: ". $e->getMessage();
-                            die();
-                        }
-                    ?>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Numero Mesa</a>
-                    <ul class="dropdown-menu scrollable-dropdown">
-                        <?php
-                            try{
-                                if(isset($_SESSION['sala'])){
-                                    $sala = htmlspecialchars(trim($_SESSION['sala']));
-                                    $sqlMesaS ="SELECT m.id_mesa FROM mesa m INNER JOIN sala s ON m.id_sala = s.id_sala WHERE s.id_sala = :id_sala";
-                                    $stmtMesaS = $conn->prepare($sqlMesaS);
-                                    $stmtMesaS->bindParam(":id_sala", $sala, PDO::PARAM_INT);
-                                    $stmtMesaS->execute();
-                                    while($fila = $stmtMesaS->fetch(PDO::FETCH_ASSOC)){
-                                        $idMesa = htmlspecialchars($fila['id_mesa']);
-                                        echo "<li><a class='dropdown-item' href='filtros.php?mesa=$idMesa'>$idMesa</a></li>";
-                                    }
-                                } else {
-                                    $sqlMesas = "SELECT * FROM mesa";
-                                    $stmtMesas = $conn->prepare($sqlMesas);
-                                    $stmtMesas->execute();
-                                    while($fila = $stmtMesas->fetch(PDO::FETCH_ASSOC)){
-                                        $idMesa = htmlspecialchars($fila['id_mesa']);
-                                        echo "<li><a class='dropdown-item' href='filtros.php?mesa=$idMesa'>$idMesa</a></li>";
-                                    }
-                                }
-                            } catch (PDOException $e) {
-                                echo "Error: ". $e->getMessage();
-                                die();
-                            }
-                        ?>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tiempo</a>
+                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Fecha Nacimiento</a>
                     <ul id="bajar" class="dropdown-menu">
                         <li class="centrar">Introduce una fecha</li>
                         <li><form id="formFecha" method="GET" action="">
-                            <input id="inputFecha" type="datetime-local" name="tiempo" id="tiempo">
+                            <input id="inputFecha" type="date" name="fechaNacimiento" id="fechaNacimiento">
                             <button id="btnFecha" class="btn btn-outline-success" type="submit">Buscar</button>
                         </form></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Fecha Contrato</a>
+                    <ul id="bajar" class="dropdown-menu">
+                        <li class="centrar">Introduce una fecha</li>
+                        <li><form id="formFecha" method="GET" action="">
+                            <input id="inputFecha" type="date" name="fechaContrato" id="fechaContrato">
+                            <button id="btnFecha" class="btn btn-outline-success" type="submit">Buscar</button>
+                        </form></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nombre y Apellido</a>
+                    <ul id="bajar" class="dropdown-menu">
+                        <li class="centrar">Introduce Nombre y Apellido</li>
+                        <li>
+                            <form id="formUsuario" method="GET" action="">
+                                <input class="input-highlight" type="text" name="nombre" id="nombre" placeholder="Nombre">
+                                <input class="input-highlight" type="text" name="apellido" id="apellido" placeholder="Apellido">
+                                <button id="btnFecha" class="btn btn-outline-success" type="submit">Buscar</button>
+                            </form>
+                        </li>
+                    </ul>
+                </li>
             </ul>
             <form class="d-flex" role="search" method="get" action="">
-                <input class="form-control me-2" type="search" name="query" placeholder="Buscar" aria-label="Search">
+                <input class="form-control me-2" type="search" name="query" value="<?php echo isset($_SESSION['query']) ? $_SESSION['query'] : '' ?>" placeholder="Buscar" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Buscar</button>
             </form>
             <div id="resultados">
@@ -204,17 +155,14 @@
     </div>
     </nav>
     <?php
-        $sqlUsarios = "SELECT * FROM usuarios u INNER JOIN roles r ON u.id_rol = r.id_rol";
-        $stmtUsuarios = $conn->prepare($sqlUsarios);
-        $stmtUsuarios->execute();
-        $resultados = $stmtUsuarios->fetchAll(PDO::FETCH_ASSOC);
         if($resultados){
             echo "<table>";
             echo "<thead>";
             echo "<tr>";
             echo "<th>Usuario</th>";
-            echo "<th>Nombre</th>";
             echo "<th>Apellido</th>";
+            echo "<th>DNI</th>";
+            echo "<th>Telefono</th>";
             echo "<th>Correo</th>";
             echo "<th>Rol</th>";
             echo "<th>Acciones</th>";
@@ -224,20 +172,24 @@
             foreach($resultados as $fila){
                 $idUsuario = htmlspecialchars($fila['id_usuario']);
                 $nombreUsuario = htmlspecialchars($fila['usuario']);
-                $nombre = htmlspecialchars($fila['nombre']);
                 $apellidoUsuario = htmlspecialchars($fila['apellido']);
+                $dni = htmlspecialchars($fila['dni']);
                 $email = htmlspecialchars($fila['email']);
+                $telefono = htmlspecialchars($fila['telefono']);
                 $rol = htmlspecialchars($fila['nombre_rol']);
                 echo "<tr>
                     <td>$nombreUsuario</td>
-                    <td>$nombre</td>
                     <td>$apellidoUsuario</td>
+                    <td>$dni</td>
+                    <td>$telefono</td>
                     <td>$email</td>
                     <td>$rol</td>
                     <td>
-                        <a href='editarUsuario.php?id=$idUsuario' class='btn btn-warning'>Editar</a>
-                        <a href='../../procesos/eliminarUsuario.php?id=$idUsuario' class='btn btn-danger'>Eliminar</a>
-                    </td>
+                        <a href='editarUsuario.php?id=$idUsuario' class='btn btn-warning'>Editar</a>";
+                        if($_SESSION['id'] !== $idUsuario){
+                        echo "<a href='#' onclick='confirmarEliminacion($idUsuario)' class='btn btn-danger'>Eliminar</a>";
+                        }
+                    "</td>
                 </tr>";
             }
             echo "</tbody>";
@@ -249,7 +201,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js" integrity="sha256-1m4qVbsdcSU19tulVTbeQReg0BjZiW6yGffnlr/NJu4=" crossorigin="anonymous"></script>
     <script>
-        <?php if($alertaEditarUsuario) : ?> // Verifica si es true la alerta
+        <?php if($alertaCrearUsuario) : ?> // Verifica si es true la alerta
+            Swal.fire({
+                title: 'Usuario creado con éxito',
+                icon: 'success',
+            })
+        <?php endif;?>
+        <?php if($alertaEditarUsuario) : ?>
             Swal.fire({
                 title: 'Usuario Editado',
                 text: 'Los cambios han sido guardados.',
@@ -263,6 +221,23 @@
                 icon:'success'
             })
         <?php endif;?>
+        function confirmarEliminacion(idUsuario) {
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "Esta acción no se puede deshacer.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+            // Redirecciona al enlace de eliminación
+                window.location.href = `../../procesos/eliminarUsuario.php?id=${idUsuario}`
+            }
+        })
+    }
     </script>
 </body>
 </html>
