@@ -10,14 +10,18 @@
     }
     require_once '../../procesos/conexion.php';
     $user = trim($_GET['id']);
-    $sqlEdit = 'SELECT * FROM usuarios u 
-                INNER JOIN roles r ON u.id_rol = r.id_rol 
-                WHERE u.id_usuario = :id_usuario';
-    $stmtEdit = $conn->prepare($sqlEdit);
-    $stmtEdit->bindParam(':id_usuario', $user, PDO::PARAM_INT);
-    $stmtEdit->execute();
-    $fila = $stmtEdit->fetch(PDO::FETCH_ASSOC);
-
+    try{
+        $sqlEdit = 'SELECT * FROM usuarios u 
+                    INNER JOIN roles r ON u.id_rol = r.id_rol 
+                    WHERE u.id_usuario = :id_usuario';
+        $stmtEdit = $conn->prepare($sqlEdit);
+        $stmtEdit->bindParam(':id_usuario', $user, PDO::PARAM_INT);
+        $stmtEdit->execute();
+        $fila = $stmtEdit->fetch(PDO::FETCH_ASSOC);
+    }catch(PDOException $e){
+        echo "Error: ". $e->getMessage();
+        die();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +51,7 @@
                 <div class="form-column">
                     <input type="hidden" name="id" value="<?php echo $user; ?>">
                     <label for="usuario">Nombre usuario: 
-                        <input type="text" name="username" id="username" value="<?php echo $fila['nombre']; ?>" readonly>
+                        <input type="text" name="username" id="username" value="<?php echo $fila['username']; ?>" readonly>
                     </label>
                     <label for="nombre">Nombre: 
                         <input type="text" name="nombre" id="nombre" value="<?php echo $fila['nombre']; ?>">

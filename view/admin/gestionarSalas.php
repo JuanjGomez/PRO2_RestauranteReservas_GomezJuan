@@ -12,8 +12,8 @@
     $successInsertSala = isset($_SESSION['successInsertSala']) && $_SESSION['successInsertSala'];
     unset($_SESSION['successInsertSala']);
     // Sweet Alert para saber si se edito un usuario correctamente
-    $alertaEditarUsuario = isset($_SESSION['editarUsuario']) && $_SESSION['editarUsuario'];
-    unset($_SESSION['editarUsuario']);
+    $salaEditada = isset($_SESSION['salaEditada']) && $_SESSION['salaEditada'];
+    unset($_SESSION['salaEditada']);
     // Sweet Alert para saber si se elimino un usuario correctamente
     $alertaEliminarUsuario = isset($_SESSION['eliminarUsuario']) && $_SESSION['eliminarUsuario'];
     unset($_SESSION['eliminarUsuario']);
@@ -176,7 +176,7 @@
                     <td>$tipoSala</td>
                     <td class='tabla-imagen'><img src='../../$imagenSala'></td>
                     <td>
-                        <a href='editarUsuario.php?id=$idSala' class='btn btn-warning'>Editar</a>
+                        <a href='editarSala.php?id=$idSala' class='btn btn-warning'>Editar</a>
                         <a href='#' onclick='confirmarEliminacion($idSala)' class='btn btn-danger'>Eliminar</a>
                     </td>
                 </tr>";
@@ -197,9 +197,9 @@
                 icon: 'success'
             })
         <?php endif;?>
-        <?php if($alertaEditarUsuario) : ?>
+        <?php if($salaEditada) : ?>
             Swal.fire({
-                title: 'Usuario Editado',
+                title: 'Sala Editado',
                 text: 'Los cambios han sido guardados.',
                 icon:'success'
             })
@@ -211,7 +211,7 @@
                 icon:'success'
             })
         <?php endif;?>
-        function confirmarEliminacion(idUsuario) {
+        function confirmarEliminacion(idSala) {
         Swal.fire({
             title: '¿Estás seguro?',
             text: "Esta acción no se puede deshacer.",
@@ -224,7 +224,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
             // Redirecciona al enlace de eliminación
-                window.location.href = `../../procesos/eliminarUsuario.php?id=${idUsuario}`
+                window.location.href = `../../procesos/eliminarSala.php?id=${idSala}`
             }
         })
     }
