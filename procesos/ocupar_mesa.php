@@ -2,7 +2,7 @@
 session_start();
 include_once './conexion.php';
 
-if (isset($_SESSION['id']) && ($_SESSION['rol'] == 'Gerente' || $_SESSION['rol'] == 'Camarero')) {
+if (isset($_SESSION['id']) || in_array($_SESSION['rol'], ['Gerente', 'Camarero'])) {
     $id_tipoSala = htmlspecialchars(trim($_POST['id_tipoSala']));
     $idCamarero = htmlspecialchars(trim($_SESSION['id']));
     $idSala = htmlspecialchars(trim($_POST['id_sala']));
@@ -13,8 +13,10 @@ if (isset($_SESSION['id']) && ($_SESSION['rol'] == 'Gerente' || $_SESSION['rol']
     try {
         $conn->beginTransaction();
 
-        $sqlRestaStock = "SELECT * FROM stock";
-        $stmtStock = $conn->query($sqlRestaStock);
+        $sqlRestaStock = "SELECT * FROM stock WHERE id_tipoSala = :id_tipoSala";
+        $stmtStock = $conn->prepare($sqlRestaStock);
+        $stmtStock->bindParam(':id_tipoSala', $id_tipoSala);
+        $stmtStock->execute();
         $row = $stmtStock->fetch(PDO::FETCH_ASSOC);
         $VerificaStock = $row['sillas_stock'];
 
@@ -29,9 +31,10 @@ if (isset($_SESSION['id']) && ($_SESSION['rol'] == 'Gerente' || $_SESSION['rol']
                 }
 
                 //Actualiza el stock de sillas
-                $sqlLimitSillas = "UPDATE stock SET sillas_stock = :nuevoStockSillas";
+                $sqlLimitSillas = "UPDATE stock SET sillas_stock = :nuevoStockSillas WHERE id_tipoSala = :id_tipoSala";
                 $stmtLimitSillas = $conn->prepare($sqlLimitSillas);
                 $stmtLimitSillas->bindParam(':nuevoStockSillas', $nuevoStockSillas);
+                $stmtLimitSillas->bindParam(':id_tipoSala', $id_tipoSala);
                 $stmtLimitSillas->execute();
             }
 

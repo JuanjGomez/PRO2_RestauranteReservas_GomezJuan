@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once '../procesos/conexion.php';
-if (!isset($_SESSION['id']) && ($_SESSION['rol'] !== 'Gerente' || $_SESSION['rol'] !== 'Camarero')) {
+if (!isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero'])) {
     header('location:../index.php');
     exit();
 }

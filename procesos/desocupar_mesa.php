@@ -2,7 +2,7 @@
 session_start();
 include_once './conexion.php';
 
-if (isset($_SESSION['id']) && ($_SESSION['rol'] == "Camarero" || $_SESSION['rol'] == "Gerente")) {
+if (isset($_SESSION['id']) || in_array($_SESSION['rol'], ['Gerente', 'Camarero'])) {
     // Escapar variables de entrada
     $id_tipoSala = htmlspecialchars(trim($_POST['id_tipoSala']));
     $idSala = htmlspecialchars(trim($_POST['id_sala']));
@@ -13,8 +13,10 @@ if (isset($_SESSION['id']) && ($_SESSION['rol'] == "Camarero" || $_SESSION['rol'
     try {
         $conn->beginTransaction();
 
-        $sqlRestaStock = "SELECT * FROM stock";
-        $stmtStock = $conn->query($sqlRestaStock);
+        $sqlRestaStock = "SELECT * FROM stock WHERE id_tipoSala = :id_tipoSala";
+        $stmtStock = $conn->prepare($sqlRestaStock);
+        $stmtStock->bindParam(':id_tipoSala', $id_tipoSala, PDO::PARAM_INT);
+        $stmtStock->execute();
         $row = $stmtStock->fetch(PDO::FETCH_ASSOC);
         $VerificaStock = $row['sillas_stock'];
 
@@ -22,9 +24,10 @@ if (isset($_SESSION['id']) && ($_SESSION['rol'] == "Camarero" || $_SESSION['rol'
         if ($num_sillas != $num_sillas_real) {
             $nuevoStockSillas = $num_sillas_real - $num_sillas + $VerificaStock;
 
-            $sqlLimitSillas = "UPDATE stock SET sillas_stock = :nuevoSillasStock";
+            $sqlLimitSillas = "UPDATE stock SET sillas_stock = :nuevoSillasStock WHERE id_tipoSala = :id_tipoSala";
             $stmtLimitSillas = $conn->prepare($sqlLimitSillas);
             $stmtLimitSillas->bindParam(':nuevoSillasStock', $nuevoStockSillas, PDO::PARAM_INT);
+            $stmtLimitSillas->bindParam(':id_tipoSala', $id_tipoSala, PDO::PARAM_INT);
             $stmtLimitSillas->execute();
         }
 
