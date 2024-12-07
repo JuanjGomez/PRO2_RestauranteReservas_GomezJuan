@@ -73,6 +73,7 @@ CREATE TABLE `db_restaurante`.`reservas` (
   `id_reserva` INT NOT NULL AUTO_INCREMENT,
   `id_usuario` INT NOT NULL,
   `id_mesa` INT NOT NULL,
+  `nombre_reserva`, VARCHAR(30) NOT NULL,
   `fecha_reserva` DATETIME NOT NULL,
   `hora_inicio_reserva` DATETIME NOT NULL,
   `hora_final_reserva` DATETIME NOT NULL,

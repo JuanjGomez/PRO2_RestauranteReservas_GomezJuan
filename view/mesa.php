@@ -135,6 +135,7 @@ if (!isset($_POST['id_tipoSala'])) {
                     }
                     echo "</div>";
                     echo "<label class='labelTipo'> Nº Sillas: " . $fila['num_sillas'] . "</label>";
+                    echo "<a href='reservarMesa.php?id_tipoSala={$id}&id_mesa={$fila['id_mesa']}&id_sala={$fila['id_sala']}'><button class='btn btn-primary'>Reservar</button></a>";
                     echo "</div>";
                 }
 
