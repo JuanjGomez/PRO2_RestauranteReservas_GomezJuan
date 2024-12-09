@@ -22,7 +22,7 @@
     $errorBorrarSala = isset($_SESSION['errorBorrarSala']) && $_SESSION['errorBorrarSala'];
     unset($_SESSION['errorBorrarSala']);
     require_once '../../procesos/conexion.php';
-    require_once '../../procesos/filtrosSalas.php'
+    require_once '../../procesos/filtrosMesas.php'
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,13 +68,14 @@
             </div>
         </nav>
     </header>
-    <h1>Gestionar Salas</h1>
+    <h1>Gestionar Mesas</h1>
+    <h3>Sala </h3>
     <div id="divReiniciar">
         <a href="borrarSesionesSalas.php?salir=1">
             <button class="btn btn-danger">Volver</button>
         </a>
         <a href="crearSala.php">
-            <button class="btn btn-success">Crear Sala</button>
+            <button class="btn btn-success">Crear Mesa</button>
         </a>
         <a href="borrarSesionesSalas.php?borrar=5">
             <button class="btn btn-warning">Reiniciar Filtros</button>
@@ -90,37 +91,26 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orden Alfabetico</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="gestionarSalas.php?orden=asc">A - Z</a></li>
-                        <li><a class="dropdown-item" href="gestionarSalas.php?orden=desc">Z - A</a></li>
+                        <li><a class="dropdown-item" href="gestionarMesas.php?orden=asc">A - Z</a></li>
+                        <li><a class="dropdown-item" href="gestionarMesas.php?orden=desc">Z - A</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tipos salas</a>
                     <ul class="dropdown-menu">
                         <?php
-                            try{
-                                $sqlTiposSalas = "SELECT * FROM tipo_sala";
-                                $stmtTiposSalas = $conn->prepare($sqlTiposSalas);
-                                $stmtTiposSalas->execute();
-                                $tiposSalas = $stmtTiposSalas->fetchAll();
-                                foreach ($tiposSalas as $tipoSala) {
-                                    echo "<li><a class='dropdown-item' href='gestionarSalas.php?tipoSala=". $tipoSala['id_tipoSala']. "'>". $tipoSala['tipo_sala']. "</a></li>";
-                                }
-                            } catch(Exception $e){
-                                echo "Error: ". $e->getMessage();
-                                die();
-                            }
+                            
                         ?>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Popularidad</a>
                     <ul id="bajar" class="dropdown-menu">
-                        <li><a class="dropdown-item" href="gestionarSalas.php?popularidad=desc">Mas popular</a></li>
-                        <li><a class="dropdown-item" href="gestionarSalas.php?popularidad=asc">Menos popular</a></li>
+                        <li><a class="dropdown-item" href="gestionarMesas.php?popularidad=desc">Mas popular</a></li>
+                        <li><a class="dropdown-item" href="gestionarMesas.php?popularidad=asc">Menos popular</a></li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="gestionarSalas.php?disponibles">Disponibles</a></li>
+                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="gestionarMesas.php?disponibles">Disponibles</a></li>
             </ul>
             <form class="d-flex" role="search" method="GET" action="">
                 <input class="form-control me-2" type="search" name="query" value="<?php echo isset($_SESSION['query']) ? $_SESSION['query'] : '' ?>" placeholder="Buscar" aria-label="Search">
@@ -132,7 +122,7 @@
     </div>
     </nav>
     <?php
-        if($resultadosSalas){
+        if($result){
             echo "<table>";
             echo "<thead>";
             echo "<tr>";
@@ -145,7 +135,7 @@
             echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
-            foreach($resultadosSalas as $fila){
+            foreach($result as $fila){
                 $idSala = htmlspecialchars($fila['id_sala']);
                 $nombreSala = htmlspecialchars($fila['nombre_sala']);
                 $imagenSala = htmlspecialchars($fila['imagen_sala']);
@@ -153,7 +143,7 @@
                 $totalReservas = isset($fila['total_historial']) ? htmlspecialchars($fila['total_historial']) : '';
                 $totalMesas = isset($fila['total_mesas']) ? htmlspecialchars($fila['total_mesas']) : '';
                 echo "<tr>
-                    <td><a href='../../procesos/intermediaSala.php?id=$idSala'>$nombreSala</a></td>
+                    <td><a href='gestionarMesas.php?id=$idSala'>$nombreSala</a></td>
                     <td>$tipoSala</td>
                     <td class='tabla-imagen'><img src='../../$imagenSala'></td>";
                 echo isset($_GET['popularidad']) ? "<td>$totalReservas</td>" : "";

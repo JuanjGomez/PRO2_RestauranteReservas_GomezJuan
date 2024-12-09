@@ -53,6 +53,14 @@
             }
         } else if(isset($_GET['query'])){
             $query = htmlspecialchars(trim($_GET['query']));
+            $queryConcadenado = "%$query%";
+            $sqlBusquedaSalas = "SELECT s.id_sala, s.nombre_sala, tp.tipo_sala, imagen_sala
+                                FROM sala s
+                                LEFT JOIN tipo_sala tp ON s.id_tipoSala = tp.id_tipoSala
+                                WHERE s.nombre_sala = :busqueda1 OR tp.tipo_sala = :busqueda2";
+            $stmtResultado = $conn->prepare($sqlBusquedaSalas);
+            $stmtResultado->bindParam(":busqueda1", $queryConcadenado);
+            $stmtResultado->bindParam(":busqueda2", $queryConcadenado);
         } else {
             $sqlSalas = "SELECT s.id_sala, s.nombre_sala, tp.tipo_sala, imagen_sala
                         FROM sala s
