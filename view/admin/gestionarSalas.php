@@ -17,6 +17,10 @@
     // Sweet Alert para saber si se elimino un usuario correctamente
     $alertaEliminarUsuario = isset($_SESSION['eliminarUsuario']) && $_SESSION['eliminarUsuario'];
     unset($_SESSION['eliminarUsuario']);
+    $successBorrarSala = isset($_SESSION['successBorrarSala']) && $_SESSION['successBorrarSala'];
+    unset($_SESSION['successBorrarSala']);
+    $errorBorrarSala = isset($_SESSION['errorBorrarSala']) && $_SESSION['errorBorrarSala'];
+    unset($_SESSION['errorBorrarSala']);
     require_once '../../procesos/conexion.php';
     require_once '../../procesos/filtrosSalas.php'
 ?>
@@ -66,13 +70,13 @@
     </header>
     <h1>Gestionar Salas</h1>
     <div id="divReiniciar">
-        <a href="borrarSesionesSales.php?salir=1">
+        <a href="borrarSesionesSalas.php?salir=1">
             <button class="btn btn-danger">Volver</button>
         </a>
         <a href="crearSala.php">
             <button class="btn btn-success">Crear Sala</button>
         </a>
-        <a href="borrarSesionesSales.php?borrar=5">
+        <a href="borrarSesionesSalas.php?borrar=5">
             <button class="btn btn-warning">Reiniciar Filtros</button>
         </a>
     </div>
@@ -86,8 +90,8 @@
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Orden Alfabetico</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="gestionarUsuarios.php?orden=asc">A - Z</a></li>
-                        <li><a class="dropdown-item" href="gestionarUsuarios.php?orden=desc">Z - A</a></li>
+                        <li><a class="dropdown-item" href="gestionarSalas.php?orden=asc">A - Z</a></li>
+                        <li><a class="dropdown-item" href="gestionarSalas.php?orden=desc">Z - A</a></li>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -95,55 +99,28 @@
                     <ul class="dropdown-menu">
                         <?php
                             try{
-                                $sqlRol = "SELECT * FROM roles";
-                                $stmtRol = $conn->query($sqlRol);
-                                $stmtRol->execute();
-                                $roles = $stmtRol->fetchAll();
-                                foreach ($roles as $rol) {
-                                    $idRol = $rol['id_rol'];
-                                    $nombreRol = $rol['nombre_rol'];
-                                    echo "<li><a class='dropdown-item enlace-barra' href='gestionarUsuarios.php?rol={$idRol}'>$nombreRol</a></li>";
+                                $sqlTiposSalas = "SELECT * FROM tipo_sala";
+                                $stmtTiposSalas = $conn->prepare($sqlTiposSalas);
+                                $stmtTiposSalas->execute();
+                                $tiposSalas = $stmtTiposSalas->fetchAll();
+                                foreach ($tiposSalas as $tipoSala) {
+                                    echo "<li><a class='dropdown-item' href='gestionarSalas.php?tipoSala=". $tipoSala['id_tipoSala']. "'>". $tipoSala['tipo_sala']. "</a></li>";
                                 }
-                            } catch(PDOException $e){
-                                echo "Error: " . $e->getMessage();
+                            } catch(Exception $e){
+                                echo "Error: ". $e->getMessage();
                                 die();
                             }
                         ?>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Fecha Nacimiento</a>
+                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Popularidad</a>
                     <ul id="bajar" class="dropdown-menu">
-                        <li class="centrar">Introduce una fecha</li>
-                        <li><form id="formFecha" method="GET" action="">
-                            <input id="inputFecha" type="date" name="fechaNacimiento" id="fechaNacimiento">
-                            <button id="btnFecha" class="btn btn-outline-success" type="submit">Buscar</button>
-                        </form></li>
+                        <li><a class="dropdown-item" href="gestionarSalas.php?popularidad=desc">Mas popular</a></li>
+                        <li><a class="dropdown-item" href="gestionarSalas.php?popularidad=asc">Menos popular</a></li>
                     </ul>
                 </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Fecha Contrato</a>
-                    <ul id="bajar" class="dropdown-menu">
-                        <li class="centrar">Introduce una fecha</li>
-                        <li><form id="formFecha" method="GET" action="">
-                            <input id="inputFecha" type="date" name="fechaContrato" id="fechaContrato">
-                            <button id="btnFecha" class="btn btn-outline-success" type="submit">Buscar</button>
-                        </form></li>
-                    </ul>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Nombre y Apellido</a>
-                    <ul id="bajar" class="dropdown-menu">
-                        <li class="centrar">Introduce Nombre y Apellido</li>
-                        <li>
-                            <form id="formUsuario" method="GET" action="">
-                                <input class="input-highlight" type="text" name="nombre" id="nombre" placeholder="Nombre">
-                                <input class="input-highlight" type="text" name="apellido" id="apellido" placeholder="Apellido">
-                                <button id="btnFecha" class="btn btn-outline-success" type="submit">Buscar</button>
-                            </form>
-                        </li>
-                    </ul>
-                </li>
+                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="gestionarSalas.php?disponibles">Disponibles</a></li>
             </ul>
             <form class="d-flex" role="search" method="GET" action="">
                 <input class="form-control me-2" type="search" name="query" value="<?php echo isset($_SESSION['query']) ? $_SESSION['query'] : '' ?>" placeholder="Buscar" aria-label="Search">
@@ -162,6 +139,8 @@
             echo "<th>Nombre</th>";
             echo "<th>Tipo Sala</th>";
             echo "<th>Imagen</th>";
+            echo isset($_GET['popularidad']) ? "<th>Total Reservas</th>" : "";
+            echo isset($_GET['disponibles']) ? "<th>Mesas disponibles</th>" : "";
             echo "<th>Acciones</th>";
             echo "</tr>";
             echo "</thead>";
@@ -171,11 +150,15 @@
                 $nombreSala = htmlspecialchars($fila['nombre_sala']);
                 $imagenSala = htmlspecialchars($fila['imagen_sala']);
                 $tipoSala = htmlspecialchars($fila['tipo_sala']);
+                $totalReservas = isset($fila['total_historial']) ? htmlspecialchars($fila['total_historial']) : '';
+                $totalMesas = isset($fila['total_mesas']) ? htmlspecialchars($fila['total_mesas']) : '';
                 echo "<tr>
                     <td>$nombreSala</td>
                     <td>$tipoSala</td>
-                    <td class='tabla-imagen'><img src='../../$imagenSala'></td>
-                    <td>
+                    <td class='tabla-imagen'><img src='../../$imagenSala'></td>";
+                echo isset($_GET['popularidad']) ? "<td>$totalReservas</td>" : "";
+                echo isset($_GET['disponibles']) ? "<td>$totalMesas</td>" : "";
+                echo "<td>
                         <a href='editarSala.php?id=$idSala' class='btn btn-warning'>Editar</a>
                         <a href='#' onclick='confirmarEliminacion($idSala)' class='btn btn-danger'>Eliminar</a>
                     </td>
@@ -209,6 +192,20 @@
                 title: 'Usuario Eliminado',
                 text: 'El usuario ha sido eliminado.',
                 icon:'success'
+            })
+        <?php endif;?>
+        <?php if($successBorrarSala) : ?>
+            Swal.fire({
+                title: 'Sala eliminada',
+                text: 'Se ha eliminado la sala exitosamente.',
+                icon:'success'
+            })
+        <?php endif;?>
+        <?php if($errorBorrarSala) : ?>
+            Swal.fire({
+                title: 'Error al eliminar sala',
+                text: 'No se pudo eliminar la sala, intentelo más tarde.',
+                icon: 'error'
             })
         <?php endif;?>
         function confirmarEliminacion(idSala) {

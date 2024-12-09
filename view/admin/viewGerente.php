@@ -42,12 +42,15 @@
                     <form class="formImg" action="gestionarUsuarios.php" method="GET">
                         <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
                     </form>
+                    <p>Gestionar Usuarios</p>
                     <form class="formImg" action="gestionarSalas.php" method="GET">
                         <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
                     </form>
+                    <p>Gestionar Recursos</p>
                     <form class="formImg" action="gestionarMesas.php" method="GET">
                         <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
                     </form>
+                    <p>Camarero</p>
                 </div>
             </div>
         </div>
