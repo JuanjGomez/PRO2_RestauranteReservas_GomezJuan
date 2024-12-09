@@ -16,42 +16,100 @@ document.getElementById("nombreReserva").oninput = function vaidaNombreReserva (
     document.getElementById("errorNombreReserva").innerHTML = errorNombreReserva
     validaForm()
 }
-document.getElementById('fechaReserva').onmouseleave = validaFechaHora()
-document.getElementById('horaReserva').onmouseleave = validaFechaHora()
-
-function validaFechaHora() {
-    const fechaReserva = document.getElementById('fechaReserva').value.trim()
-    const horaReserva = document.getElementById('horaReserva').value.trim()
+document.getElementById("numeroSillas").onmouseleave = function validaNumerodeSillas () {
+    let numeroSillas = this.value.trim()
+    let errorNumeroSillas = ""
+    if (numeroSillas == 0 || numeroSillas == null) {
+        errorNumeroSillas = "El campo no puede estar vacío."
+    } else if (numeroSillas < 1 || numeroSillas > 10) {
+        errorNumeroSillas = "El número de sillas debe estar entre 1 y 10."
+    }
+    document.getElementById("errorNumeroSillas").innerHTML = errorNumeroSillas
+    validaForm()
+}
+document.getElementById("fechaReserva").onmouseleave = function validarFecha() {
+    let fechaReserva = new Date(this.value)
     let errorFechaReserva = ""
-    let errorHoraReserva = ""
 
-    if(!fechaReserva) {
-        errorFechaReserva = "Debe seleccionar una fecha."
-    } else if(!horaReserva) {
-        errorHoraReserva = "Debe seleccionar una hora."
-    } else {
-        const fechaCompletaReserva = new Date(`${fechaReserva}T${horaReserva}`)
-        const fechaActual = new Date()
+    // Obtener la fecha de hoy y la fecha limite de 3 meses en el futuro
+    let hoy = new Date()
+    hoy.setHours(0, 0, 0, 0) // Elmina la parte de horas para comparacion precisa
+    let tresMesesDespues = new Date(hoy)
+    tresMesesDespues.setMonth(tresMesesDespues.getMonth() + 3)
 
-        if(fechaCompletaReserva < fechaActual){
-            errorFechaReserva = "La fecha y hora debes ser posteriores al momento actual"
+    //Validar que la fecha este dentro del rango permitido
+    if (isNaN(fechaReserva.getTime())){
+        errorFechaReserva = "Debe seleccionar una fecha válida."
+    } else if (fechaReserva < hoy){
+        errorFechaReserva = "La fecha no puede ser anterior a hoy."
+    } else if(fechaReserva > tresMesesDespues) { 
+        errorFechaReserva = "La fecha no puede ser mas de 3 mese a partir de hoy."
+    }
+    document.getElementById("errorFechaReserva").innerHTML = errorFechaReserva
+    validaForm()
+}
+document.getElementById("horaReserva").onfocus = function actualizarHoras() {
+    const selectHora = document.getElementById("horaReserva");
+    const fechaReserva = document.getElementById("fechaReserva").value.trim();
+    let errorHoraReserva = "";
+
+    // Limpiar las opciones previas (excepto la primera opción)
+    while (selectHora.options.length > 1) {
+        selectHora.remove(1);
+    }
+
+    // Obtener la fecha de hoy
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    // Verificar si la fecha de reserva es hoy
+    const fechaSeleccionada = new Date(fechaReserva);
+    fechaSeleccionada.setHours(0, 0, 0, 0);
+
+    // Obtener la hora actual solo si la fecha es hoy
+    const horaActual = hoy.getTime() === fechaSeleccionada.getTime() ? new Date().getHours() : -1;
+
+    // Generar las horas disponibles (16:00 a 22:00)
+    const horaInicio = 16;
+    const horaFin = 22;
+
+    for (let hora = horaInicio; hora <= horaFin; hora++) {
+        if (hora > horaActual) { // Mostrar solo horas futuras
+            let formattedHora = `${hora.toString().padStart(2, '0')}:00`;
+            let option = document.createElement("option");
+            option.value = formattedHora;
+            option.textContent = formattedHora;
+            selectHora.appendChild(option);
         }
     }
 
-    //Actualizar los mensajes de error en el DOM
-    document.getElementById("errorFechaReserva").innerHTML = errorFechaReserva
-    document.getElementById("errorHoraReserva").innerHTML = errorHoraReserva
-    validaForm()
-}
-function validaForm() {
-
-    const errorFechaReserva = document.getElementById("errorFechaReserva").innerHTML;
-    const errorHoraReserva = document.getElementById("errorHoraReserva").innerHTML;
-
-    const boton = document.getElementById("boton");
-    if (!errorFechaReserva && !errorHoraReserva) {
-        boton.disabled = false;
-    } else {
-        boton.disabled = true;
+    // Validar si no hay opciones disponibles
+    if (selectHora.options.length <= 1) {
+        errorHoraReserva = "No hay horarios disponibles para la fecha seleccionada.";
     }
+
+    // Mostrar el error si corresponde
+    document.getElementById("errorHoraReserva").innerHTML = errorHoraReserva;
+
+    // Actualizar el estado del formulario
+    validaForm();
+};
+
+function validaForm() {
+    const errores = [
+        document.getElementById("errorNombreReserva").innerHTML,
+        document.getElementById("errorNumeroSillas").innerHTML,
+        document.getElementById("errorFechaReserva").innerHTML,
+        document.getElementById("errorHoraReserva").innerHTML
+    ]
+    const campos = [
+        document.getElementById("nombreReserva").value.trim(),
+        document.getElementById("numeroSillas").value.trim(),
+        document.getElementById("fechaReserva").value.trim(),
+        document.getElementById("horaReserva").value.trim()
+    ]
+    const hayErrores = errores.some(error => error!== "")
+    const camposVacios = campos.some(campo => campo == "")
+
+    document.getElementById("boton").disabled = hayErrores || camposVacios;
 }

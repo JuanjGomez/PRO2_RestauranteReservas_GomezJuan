@@ -20,14 +20,31 @@
     $idSala = htmlspecialchars(trim($_GET['id_sala']));
     $idMesa= htmlspecialchars(trim($_GET['id_mesa']));
     require_once '../procesos/conexion.php';
-    try{
+    try {
+        // Consulta para obtener los datos de la mesa
         $sqlMesa = "SELECT * FROM mesa WHERE id_mesa = :id_mesa";
         $stmtMesa = $conn->prepare($sqlMesa);
         $stmtMesa->bindParam(':id_mesa', $idMesa, PDO::PARAM_INT);
         $stmtMesa->execute();
         $resultMesas = $stmtMesa->fetch(PDO::FETCH_ASSOC);
-    } catch(PDOException $e){
-        echo 'Error: '. $e->getMessage();
+    
+        // Consulta para obtener las horas reservadas para la mesa en la fecha seleccionada
+        $sqlReservas = "SELECT DATE_FORMAT(hora_inicio_reserva, '%H') AS hora_reserva
+                FROM reservas
+                WHERE id_mesa = :id_mesa
+                AND fecha_reserva = :fecha_reserva";
+        $stmtReservas = $conn->prepare($sqlReservas);
+        $stmtReservas->bindParam(':id_mesa', $idMesa, PDO::PARAM_INT);
+        $stmtReservas->bindParam(':fecha_reserva', $fechaReserva, PDO::PARAM_STR); // Asegúrate de enviar esta fecha
+        $stmtReservas->execute();
+        $reservas = $stmtReservas->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Convertir las reservas a un array de horas
+        $horasReservadas = array_map(function($reserva) {
+            return $reserva['hora_reserva'];
+        }, $reservas);
+    } catch (PDOException $e) {
+        echo 'Error: ' . $e->getMessage();
         die();
     }
 ?>
@@ -81,13 +98,19 @@
                 </label>
                 <p id="errorFechaReserva" class="error"></p>
                 <label for="horaReserva">Hora de Reserva: 
-                    <input type="time" name="horaReserva" id="horaReserva" class="form-control">
-                </label>
+                <select name="horaReserva" id="horaReserva" class="form-control">
+                    <option value="" selected disabled>Selecciona una opción</option>
+                    <?php
+                    $horasDisponibles = range(16, 22); // Horas permitidas (16:00 a 22:00)
+                    foreach ($horasDisponibles as $hora) {
+                        $formattedHora = sprintf('%02d:00', $hora);
+                        $disabled = in_array((string)$hora, $horasReservadas) ? 'disabled' : '';
+                        echo "<option value=\"$formattedHora\" $disabled>$formattedHora</option>";
+                    }
+                    ?>
+                </select>
+            </label>
                 <p id="errorHoraReserva" class="error"></p>
-                <label for="horaSalida">Hora de Salida: 
-                    <input type="time" name="horaSalida" id="horaSalida" class="form-control">
-                </label>
-                <p id="errorHoraSalida" class="error"></p>
             </div>
             <button type="submit" id="boton" disabled>Enviar</button>
         </form>

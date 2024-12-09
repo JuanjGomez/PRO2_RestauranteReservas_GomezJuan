@@ -35,6 +35,10 @@ if (!isset($_POST['id_tipoSala'])) {
             echo "<script>let errorStock = true;</script>";
             unset($_SESSION['errorStock']);
         }
+        if(isset($_SESSION['reservaRealizada']) && $_SESSION['reservaRealizada']) {
+            unset($_SESSION['reservaRealizada']);
+            echo "<script>let reservaRealizada = true;</script>";
+        }
 
         $numero = count($result);
         $nuevoNumero = 4;
@@ -221,6 +225,14 @@ if (!isset($_POST['id_tipoSala'])) {
                 Swal.fire({
                     title: "Mesa Desocupada!",
                     text: "La mesa ha sido desocupada exitosamente!",
+                    icon: "success",
+                    confirmButtonText: "Aceptar"
+                });
+            }
+            if(typeof reservaRealizada !== "undefined" && reservaRealizada) {
+                Swal.fire({
+                    title: "Reserva realizada!",
+                    text: "La reserva se ha realizado correctamente!",
                     icon: "success",
                     confirmButtonText: "Aceptar"
                 });
