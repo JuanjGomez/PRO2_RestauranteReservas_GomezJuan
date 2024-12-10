@@ -123,7 +123,7 @@
                 <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="gestionarSalas.php?disponibles">Disponibles</a></li>
             </ul>
             <form class="d-flex" role="search" method="GET" action="">
-                <input class="form-control me-2" type="search" name="query" value="<?php echo isset($_SESSION['query']) ? $_SESSION['query'] : '' ?>" placeholder="Buscar" aria-label="Search">
+                <input class="form-control me-2" type="search" name="query" value="<?php echo isset($_SESSION['querySalas']) ? $_SESSION['querySalas'] : '' ?>" placeholder="Buscar" aria-label="Search">
                 <button class="btn btn-outline-success" type="submit">Buscar</button>
             </form>
             <div id="resultados">
@@ -153,7 +153,7 @@
                 $totalReservas = isset($fila['total_historial']) ? htmlspecialchars($fila['total_historial']) : '';
                 $totalMesas = isset($fila['total_mesas']) ? htmlspecialchars($fila['total_mesas']) : '';
                 echo "<tr>
-                    <td><a href='../../procesos/intermediaSala.php?id=$idSala'>$nombreSala</a></td>
+                    <td>$nombreSala</td>
                     <td>$tipoSala</td>
                     <td class='tabla-imagen'><img src='../../$imagenSala'></td>";
                 echo isset($_GET['popularidad']) ? "<td>$totalReservas</td>" : "";

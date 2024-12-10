@@ -9,11 +9,11 @@
         exit();
     }
     // Sweet Alert para saber si se creo un usario correctamente
-    $successInsertSala = isset($_SESSION['successInsertSala']) && $_SESSION['successInsertSala'];
-    unset($_SESSION['successInsertSala']);
+    $successCrearMesa = isset($_SESSION['successCrearMesa']) && $_SESSION['successCrearMesa'];
+    unset($_SESSION['successCrearMesa']);
     // Sweet Alert para saber si se edito un usuario correctamente
-    $salaEditada = isset($_SESSION['salaEditada']) && $_SESSION['salaEditada'];
-    unset($_SESSION['salaEditada']);
+    $editarMesaExitosa = isset($_SESSION['editarMesaExitosa']) && $_SESSION['editarMesaExitosa'];
+    unset($_SESSION['editarMesaExitosa']);
     // Sweet Alert para saber si se elimino un usuario correctamente
     $alertaEliminarUsuario = isset($_SESSION['eliminarUsuario']) && $_SESSION['eliminarUsuario'];
     unset($_SESSION['eliminarUsuario']);
@@ -22,7 +22,7 @@
     $errorBorrarSala = isset($_SESSION['errorBorrarSala']) && $_SESSION['errorBorrarSala'];
     unset($_SESSION['errorBorrarSala']);
     require_once '../../procesos/conexion.php';
-    require_once '../../procesos/filtrosMesas.php'
+    require_once '../../procesos/filtrosMesas.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,12 +69,11 @@
         </nav>
     </header>
     <h1>Gestionar Mesas</h1>
-    <h3>Sala </h3>
     <div id="divReiniciar">
         <a href="borrarSesionesSalas.php?salir=1">
             <button class="btn btn-danger">Volver</button>
         </a>
-        <a href="crearSala.php">
+        <a href="crearMesa.php">
             <button class="btn btn-success">Crear Mesa</button>
         </a>
         <a href="borrarSesionesSalas.php?borrar=5">
@@ -99,18 +98,66 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Tipos salas</a>
                     <ul class="dropdown-menu">
                         <?php
-                            
+                            try{
+                                $sqlTiposSalas = "SELECT * FROM tipo_sala";
+                                $stmtTiposSalas = $conn->prepare($sqlTiposSalas);
+                                $stmtTiposSalas->execute();
+                                $tiposSalas = $stmtTiposSalas->fetchAll();
+                                foreach ($tiposSalas as $tipoSala) {
+                                    echo "<li><a class='dropdown-item' href='gestionarMesas.php?tipoSala=" . $tipoSala['id_tipoSala'] . "'>" . $tipoSala['tipo_sala'] . "</a></li>";
+                                }
+                            } catch(Exception $e){
+                                echo "Error: ". $e->getMessage();
+                                die();
+                            }
                         ?>
                     </ul>
                 </li>
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Popularidad</a>
+                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Salas</a>
                     <ul id="bajar" class="dropdown-menu">
-                        <li><a class="dropdown-item" href="gestionarMesas.php?popularidad=desc">Mas popular</a></li>
-                        <li><a class="dropdown-item" href="gestionarMesas.php?popularidad=asc">Menos popular</a></li>
+                        <?php
+                            try{
+                                // Comprueba si se ha seleccionado un tipo de sala en la sesión
+                                if (isset($_SESSION['salaTipo'])) {
+                                    $tipoSala = htmlspecialchars(trim($_SESSION['salaTipo']));
+                                    $sqlSalas = "SELECT * FROM sala WHERE id_tipoSala = :id_tipoSala";
+                                    $stmtSalas = $conn->prepare($sqlSalas);
+                                    $stmtSalas->bindParam("id_tipoSala", $tipoSala, PDO::PARAM_INT);
+                                    $stmtSalas->execute();
+                                    while ($fila = $stmtSalas->fetch(PDO::FETCH_ASSOC)) {
+                                        $idSala = htmlspecialchars($fila['id_sala']);
+                                        $nombreSala = htmlspecialchars($fila['nombre_sala']);
+                                        echo "<li><a class='dropdown-item enlace-barra' href='gestionarMesas.php?sala={$idSala}'>$nombreSala</a></li>";
+                                    }
+                                } else {
+                                    $sqlSalas = "SELECT * FROM sala";
+                                    $stmtSalas = $conn->prepare($sqlSalas);
+                                    $stmtSalas->bindParam("id_tipoSala", $tipoSala, PDO::PARAM_INT);
+                                    $stmtSalas->execute();
+                                    while ($fila = $stmtSalas->fetch(PDO::FETCH_ASSOC)) {
+                                        $idSala = htmlspecialchars($fila['id_sala']);
+                                        $nombreSala = htmlspecialchars($fila['nombre_sala']);
+                                        echo "<li><a class='dropdown-item enlace-barra' href='gestionarMesas.php?sala={$idSala}'>$nombreSala</a></li>";
+                                    }
+                                }
+                            } catch (PDOException $e) {
+                                echo "Error: ". $e->getMessage();
+                                die();
+                            }
+                        ?>
                     </ul>
                 </li>
-                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="gestionarMesas.php?disponibles">Disponibles</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Numero Sillas</a>
+                    <ul id="bajar" class="dropdown-menu">
+                        <?php
+                            for ($i = 2; $i <= 10; $i+=2) {
+                                echo "<li class='dropdown-item' href='gestionarMesas.php?numeroSillas='{$i}''>{$i}</li>";
+                            }
+                        ?>
+                    </ul>
+                </li>
             </ul>
             <form class="d-flex" role="search" method="GET" action="">
                 <input class="form-control me-2" type="search" name="query" value="<?php echo isset($_SESSION['query']) ? $_SESSION['query'] : '' ?>" placeholder="Buscar" aria-label="Search">
@@ -126,31 +173,27 @@
             echo "<table>";
             echo "<thead>";
             echo "<tr>";
-            echo "<th>Nombre</th>";
+            echo "<th>Nº Mesa</th>";
+            echo "<th>Sala</th>";
             echo "<th>Tipo Sala</th>";
-            echo "<th>Imagen</th>";
-            echo isset($_GET['popularidad']) ? "<th>Total Reservas</th>" : "";
-            echo isset($_GET['disponibles']) ? "<th>Mesas disponibles</th>" : "";
+            echo "<th>Nº Sillas</th>";
             echo "<th>Acciones</th>";
             echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
             foreach($result as $fila){
-                $idSala = htmlspecialchars($fila['id_sala']);
+                $idMesa = htmlspecialchars($fila['id_mesa']);
                 $nombreSala = htmlspecialchars($fila['nombre_sala']);
-                $imagenSala = htmlspecialchars($fila['imagen_sala']);
                 $tipoSala = htmlspecialchars($fila['tipo_sala']);
-                $totalReservas = isset($fila['total_historial']) ? htmlspecialchars($fila['total_historial']) : '';
-                $totalMesas = isset($fila['total_mesas']) ? htmlspecialchars($fila['total_mesas']) : '';
+                $sillas = htmlspecialchars($fila['num_sillas']);
                 echo "<tr>
-                    <td><a href='gestionarMesas.php?id=$idSala'>$nombreSala</a></td>
+                    <td>$idMesa</td>
+                    <td>$nombreSala</td>
                     <td>$tipoSala</td>
-                    <td class='tabla-imagen'><img src='../../$imagenSala'></td>";
-                echo isset($_GET['popularidad']) ? "<td>$totalReservas</td>" : "";
-                echo isset($_GET['disponibles']) ? "<td>$totalMesas</td>" : "";
-                echo "<td>
-                        <a href='editarSala.php?id=$idSala' class='btn btn-warning'>Editar</a>
-                        <a href='#' onclick='confirmarEliminacion($idSala)' class='btn btn-danger'>Eliminar</a>
+                    <td>$sillas</td>
+                    <td>
+                        <a href='editarMesa.php?id=$idMesa' class='btn btn-warning'>Editar</a>
+                        <a href='#' onclick='confirmarEliminacion($idMesa)' class='btn btn-danger'>Eliminar</a>
                     </td>
                 </tr>";
             }
@@ -163,16 +206,16 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js" integrity="sha256-1m4qVbsdcSU19tulVTbeQReg0BjZiW6yGffnlr/NJu4=" crossorigin="anonymous"></script>
     <script>
-        <?php if($successInsertSala) : ?> // Verifica si es true la alerta
+        <?php if($successCrearMesa) : ?> // Verifica si es true la alerta
             Swal.fire({
                 title: 'Éxito!',
-                text: 'La sala fue creada correctamente.',
+                text: 'La mesa ha sido creada correctamente.',
                 icon: 'success'
             })
         <?php endif;?>
-        <?php if($salaEditada) : ?>
+        <?php if($editarMesaExitosa) : ?>
             Swal.fire({
-                title: 'Sala Editado',
+                title: 'Mesa Editada',
                 text: 'Los cambios han sido guardados.',
                 icon:'success'
             })
@@ -191,14 +234,7 @@
                 icon:'success'
             })
         <?php endif;?>
-        <?php if($errorBorrarSala) : ?>
-            Swal.fire({
-                title: 'Error al eliminar sala',
-                text: 'No se pudo eliminar la sala, intentelo más tarde.',
-                icon: 'error'
-            })
-        <?php endif;?>
-        function confirmarEliminacion(idSala) {
+        function confirmarEliminacion(idMesa) {
         Swal.fire({
             title: '¿Estás seguro?',
             text: "Esta acción no se puede deshacer.",
@@ -211,7 +247,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
             // Redirecciona al enlace de eliminación
-                window.location.href = `../../procesos/eliminarSala.php?id=${idSala}`
+                window.location.href = `../../procesos/eliminarSala.php?id=${idMesa}`
             }
         })
     }

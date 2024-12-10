@@ -92,7 +92,10 @@
         $stmtActualizarSala->execute();
 
         $_SESSION['salaEditada'] = true;
-        header("Location:../view/admin/gestionarSalas.php");
+        ?>
+        <form method="GET" name="formulario" action="../view/admin/gestionarSalas.php"></form>
+        <script> document.formulario.submit(); </script>
+        <?php
         exit();
     } catch (PDOException $e){
         echo "Error: ". $e->getMessage();

@@ -35,9 +35,9 @@
     </header>
     <div class="container">
         <h1 class="bienvenido">Bienvenido, <?php echo $_SESSION['nombre']; ?>!</h1>
-        <h3>Selecciona algun area de trabajo:</h3>
-        <div class="row">
-            <div class="col-md-4 mb-4">
+        <h3>Selecciona algún área de trabajo:</h3>
+        <div class="row text-center justify-content-center">
+            <div class="col-md-3">
                 <div class="container_img grow">
                     <form class="formImg" action="gestionarUsuarios.php" method="GET">
                         <button class="botonImg" type="submit"><img src="../../img/Aha-Soft-Software-User-group.ico" alt=""></button>
@@ -45,19 +45,27 @@
                 </div>
                 <p>Gestionar Usuarios</p>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3">
                 <div class="container_img grow">
                     <form class="formImg" action="gestionarSalas.php" method="GET">
                         <button class="botonImg" type="submit"><img src="../../img/almacen2.jpg" alt=""></button>
                     </form>
                 </div>
-                <p>Gestionar Recursos</p>
+                <p>Gestionar Salas</p>
             </div>
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3">
                 <div class="container_img grow">
-                <form class="formImg" action="gestionarMesas.php" method="GET">
-                    <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
-                </form>
+                    <form class="formImg" action="gestionarMesas.php" method="GET">
+                        <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
+                    </form>
+                </div>
+                <p>Gestionar Mesas</p>
+            </div>
+            <div class="col-md-3">
+                <div class="container_img grow">
+                    <form class="formImg" action="gestionarMesas.php" method="GET">
+                        <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
+                    </form>
                 </div>
                 <p>Camarero</p>
             </div>
