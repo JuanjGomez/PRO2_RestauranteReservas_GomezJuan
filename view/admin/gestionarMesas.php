@@ -13,14 +13,9 @@
     unset($_SESSION['successCrearMesa']);
     // Sweet Alert para saber si se edito un usuario correctamente
     $editarMesaExitosa = isset($_SESSION['editarMesaExitosa']) && $_SESSION['editarMesaExitosa'];
-    unset($_SESSION['editarMesaExitosa']);
-    // Sweet Alert para saber si se elimino un usuario correctamente
-    $alertaEliminarUsuario = isset($_SESSION['eliminarUsuario']) && $_SESSION['eliminarUsuario'];
-    unset($_SESSION['eliminarUsuario']);
-    $successBorrarSala = isset($_SESSION['successBorrarSala']) && $_SESSION['successBorrarSala'];
-    unset($_SESSION['successBorrarSala']);
-    $errorBorrarSala = isset($_SESSION['errorBorrarSala']) && $_SESSION['errorBorrarSala'];
-    unset($_SESSION['errorBorrarSala']);
+    unset($_SESSION['editarMesaExitosa']);;
+    $successEliminarMesa = isset($_SESSION['successEliminarMesa']) && $_SESSION['successEliminarMesa'];
+    unset($_SESSION['successEliminarMesa']);
     require_once '../../procesos/conexion.php';
     require_once '../../procesos/filtrosMesas.php';
 ?>
@@ -133,7 +128,6 @@
                                 } else {
                                     $sqlSalas = "SELECT * FROM sala";
                                     $stmtSalas = $conn->prepare($sqlSalas);
-                                    $stmtSalas->bindParam("id_tipoSala", $tipoSala, PDO::PARAM_INT);
                                     $stmtSalas->execute();
                                     while ($fila = $stmtSalas->fetch(PDO::FETCH_ASSOC)) {
                                         $idSala = htmlspecialchars($fila['id_sala']);
@@ -152,12 +146,29 @@
                     <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Numero Sillas</a>
                     <ul id="bajar" class="dropdown-menu">
                         <?php
-                            for ($i = 2; $i <= 10; $i+=2) {
-                                echo "<li class='dropdown-item' href='gestionarMesas.php?numeroSillas='{$i}''>{$i}</li>";
+                            if(isset($_SESSION['salaID'])){
+                                $idSala = htmlspecialchars($_SESSION['salaID']);
+                                $sqlNumSillaSala = "SELECT DISTINCT num_sillas 
+                                                    FROM mesa m
+                                                    LEFT JOIN sala s ON m.id_sala = s.id_sala
+                                                    LEFT JOIN tipo_sala tp ON s.id_tipoSala = tp.id_tipoSala 
+                                                    WHERE s.id_sala = :idSala";
+                                $stmtNumSillaSala = $conn->prepare($sqlNumSillaSala);
+                                $stmtNumSillaSala->bindParam(":idSala", $idSala, PDO::PARAM_INT);
+                                $stmtNumSillaSala->execute();
+                                $filas = $stmtNumSillaSala->fetchAll(PDO::FETCH_ASSOC);
+                                foreach($filas as $fila){
+                                    echo "<li><a class='dropdown-item enlace-barra' href='gestionarMesas.php?numeroSillas=". $fila['num_sillas']. "'>". $fila['num_sillas']. "</a></li>";
+                                }
+                            } else {
+                                for ($i = 2; $i <= 10; $i+=2) {
+                                    echo "<li><a class='dropdown-item enlace-barra' href='gestionarMesas.php?numeroSillas={$i}'>$i</a></li>";
+                                }
                             }
                         ?>
                     </ul>
                 </li>
+                <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="gestionarMesas.php?disponible">Disponibles</a></li>
             </ul>
             <form class="d-flex" role="search" method="GET" action="">
                 <input class="form-control me-2" type="search" name="query" value="<?php echo isset($_SESSION['query']) ? $_SESSION['query'] : '' ?>" placeholder="Buscar" aria-label="Search">
@@ -220,17 +231,10 @@
                 icon:'success'
             })
         <?php endif; ?>
-        <?php if($alertaEliminarUsuario) : ?>
+        <?php if($successEliminarMesa) : ?>
             Swal.fire({
-                title: 'Usuario Eliminado',
-                text: 'El usuario ha sido eliminado.',
-                icon:'success'
-            })
-        <?php endif;?>
-        <?php if($successBorrarSala) : ?>
-            Swal.fire({
-                title: 'Sala eliminada',
-                text: 'Se ha eliminado la sala exitosamente.',
+                title: 'Mesa eliminada',
+                text: 'Se ha eliminado la mesa exitosamente.',
                 icon:'success'
             })
         <?php endif;?>
@@ -247,7 +251,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
             // Redirecciona al enlace de eliminación
-                window.location.href = `../../procesos/eliminarSala.php?id=${idMesa}`
+                window.location.href = `../../procesos/eliminarMesa.php?id=${idMesa}`
             }
         })
     }

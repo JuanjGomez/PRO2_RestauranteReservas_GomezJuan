@@ -36,18 +36,20 @@
             $stmtResultado->bindParam(":tipoSala", $tipoSala, PDO::PARAM_INT);
             $_SESSION['tipoSala'] = $tipoSala;
         } else if(isset($_GET['disponibles'])){
+            $disponibles = 0;
             // Consulta para ver las mesas disponibles
             $sqlDisponibles = "SELECT s.id_sala, s.nombre_sala, tp.tipo_sala, imagen_sala, COUNT(m.id_mesa) AS total_mesas 
                                 FROM sala s 
                                 LEFT JOIN tipo_sala tp ON s.id_tipoSala = tp.id_tipoSala 
                                 LEFT JOIN mesa m ON s.id_sala = m.id_sala 
-                                WHERE m.libre = 0";
+                                WHERE m.libre = :libre";
             if(isset($_SESSION['tipoSala'])){
                 $tipoSalaDisponibles = $_SESSION['tipoSala'];
                 $sqlDisponibles .= " AND s.id_tipoSala = :tipoSalaDisponibles";
             }
             $sqlDisponibles .= " GROUP BY s.id_sala";
             $stmtResultado = $conn->prepare($sqlDisponibles);
+            $stmtResultado->bindParam(':libre',$disponibles, PDO::PARAM_INT);
             if(isset($_SESSION['tipoSala'])){
                 $stmtResultado->bindParam(":tipoSalaDisponibles", $tipoSalaDisponibles, PDO::PARAM_INT);
             }
