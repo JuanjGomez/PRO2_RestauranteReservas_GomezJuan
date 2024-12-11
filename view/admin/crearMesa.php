@@ -37,7 +37,7 @@
     <form method="GET" action="gestionarMesas.php">
         <button type="submit" class="btn btn-danger">VOLVER</button>
     </form>
-    <h3>Editar Mesa</h3>
+    <h3>Crear Mesa</h3>
     <div class="container">
         <form method="POST" id="crear" action="../../procesos/insertMesa.php" enctype="multipart/form-data">
             <div class="form-column">

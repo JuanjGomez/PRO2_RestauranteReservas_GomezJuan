@@ -48,7 +48,7 @@
             <div class="col-md-3">
                 <div class="container_img grow">
                     <form class="formImg" action="gestionarSalas.php" method="GET">
-                        <button class="botonImg" type="submit"><img src="../../img/almacen2.jpg" alt=""></button>
+                        <button class="botonImg" type="submit"><img src="../../img/administrarSala.jpg" alt=""></button>
                     </form>
                 </div>
                 <p>Gestionar Salas</p>
@@ -56,7 +56,7 @@
             <div class="col-md-3">
                 <div class="container_img grow">
                     <form class="formImg" action="gestionarMesas.php" method="GET">
-                        <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
+                        <button class="botonImg" type="submit"><img src="../../img/almacen2.jpg" alt=""></button>
                     </form>
                 </div>
                 <p>Gestionar Mesas</p>
@@ -64,7 +64,7 @@
             <div class="col-md-3">
                 <div class="container_img grow">
                     <form class="formImg" action="gestionarMesas.php" method="GET">
-                        <button class="botonImg" type="submit"><img src="../img/usuarios.png" alt=""></button>
+                        <button class="botonImg" type="submit"><img src="../../img/rolCamarero.jpg" alt=""></button>
                     </form>
                 </div>
                 <p>Camarero</p>

@@ -36,7 +36,7 @@
     <form method="GET" action="gestionarSalas.php">
         <button type="submit" class="btn btn-danger">VOLVER</button>
     </form>
-    <h3>Cronstruir Sala</h3>
+    <h3>Construir Sala</h3>
     <div class="container">
         <form method="POST" id="crear" action="../../procesos/insertSala.php" enctype="multipart/form-data">
             <div class="form-column">

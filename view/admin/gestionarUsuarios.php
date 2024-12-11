@@ -156,7 +156,7 @@
     </nav>
     <?php
         if($resultados){
-            echo "<table>";
+            echo "<table class='tabla-usuarios'>";
             echo "<thead>";
             echo "<tr>";
             echo "<th>Usuario</th>";

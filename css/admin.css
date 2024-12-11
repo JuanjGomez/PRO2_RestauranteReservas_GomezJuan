@@ -441,3 +441,15 @@ footer {
         width: 55% !important;
     }
 }
+
+/* Ocultar columnas específicas en tamaños de pantalla pequeños para tabla-usuarios */
+@media (max-width: 400px) {
+    .tabla-usuarios th:nth-child(2), /* Apellido */
+    .tabla-usuarios td:nth-child(2),
+    .tabla-usuarios th:nth-child(4), /* Teléfono */
+    .tabla-usuarios td:nth-child(4),
+    .tabla-usuarios th:nth-child(5), /* Correo */
+    .tabla-usuarios td:nth-child(5) {
+        display: none;
+    }
+}

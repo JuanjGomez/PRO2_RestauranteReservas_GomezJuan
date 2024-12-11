@@ -51,7 +51,7 @@
                 <div class="form-column">
                     <input type="hidden" name="id" value="<?php echo $user; ?>">
                     <label for="usuario">Nombre usuario: 
-                        <input type="text" name="username" id="username" value="<?php echo $fila['username']; ?>" readonly>
+                        <input type="text" name="username" id="username" value="<?php echo $fila['usuario']; ?>" readonly>
                     </label>
                     <label for="nombre">Nombre: 
                         <input type="text" name="nombre" id="nombre" value="<?php echo $fila['nombre']; ?>">
