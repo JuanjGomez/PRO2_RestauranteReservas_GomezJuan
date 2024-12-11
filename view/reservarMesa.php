@@ -5,15 +5,7 @@
         exit();
     }
     if($_SERVER['REQUEST_METHOD'] !== 'GET'){
-        ?>
-        <form action="mesa.php" method="POST" name="formulario">
-            <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
-            <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
-        </form>
-        <script language="JavaScript">
-            document.formulario.submit();
-        </script>
-        <?php
+        header('Location: ../index.php');
         exit();
     }
     $id_tipoSala = htmlspecialchars(trim($_GET['id_tipoSala']));
@@ -43,6 +35,11 @@
         $horasReservadas = array_map(function($reserva) {
             return $reserva['hora_reserva'];
         }, $reservas);
+
+        if(isset($_SESSION['errorReserva']) && $_SESSION['errorReserva']){
+            echo "<script> let errorReserva = true;</script>";
+            unset($_SESSION['errorReserva']);
+        }
     } catch (PDOException $e) {
         echo 'Error: ' . $e->getMessage();
         die();
@@ -75,16 +72,18 @@
     <div class="container">
         <form method="POST" id="crear" action="../procesos/insertReserva.php">
             <div class="form-column">
+                <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
+                <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
                 <input type="hidden" name="id_mesa" id="id_mesa" value="<?php echo $idMesa ?>">
                 <label for="nombreReserva">Nombre de la Reserva 
                     <input type="text" name="nombreReserva" id="nombreReserva" class="form-control">
                 </label>
                 <p id="errorNombreReserva" class="error"></p>
-                <label for="numeroSillas">Cantidad de personas: 
+                <label for="numeroSillas">Cantidad de Sillas a Reservar: 
                     <select name="numeroSillas" id="numeroSillas" class="form-control">
                         <option value="" selected-disabled>Selecciona una opcion: </option>
                         <?php
-                            for($i=1; $i<=10; $i++){
+                            for($i=2; $i<=10; $i+=2){
                                 ?>
                                 <option value="<?php echo $i?>" class="form-control"><?php echo $i?></option>
                                 <?php
@@ -101,7 +100,7 @@
                 <select name="horaReserva" id="horaReserva" class="form-control">
                     <option value="" selected disabled>Selecciona una opción</option>
                     <?php
-                    $horasDisponibles = range(16, 22); // Horas permitidas (16:00 a 22:00)
+                    $horasDisponibles = range(16, 22);
                     foreach ($horasDisponibles as $hora) {
                         $formattedHora = sprintf('%02d:00', $hora);
                         $disabled = in_array((string)$hora, $horasReservadas) ? 'disabled' : '';
@@ -119,7 +118,14 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js" integrity="sha256-1m4qVbsdcSU19tulVTbeQReg0BjZiW6yGffnlr/NJu4=" crossorigin="anonymous"></script>
     <script src="../validations/js/validaReserva.js"></script>
     <script>
-
+        if(typeof errorReserva != "undefined" && errorReserva){
+            Swal.fire({
+                title: 'Error',
+                text: 'La mesa ya tiene una reserva en esa hora y fecha',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+        }
     </script>
 </body>
 </html>

@@ -65,13 +65,13 @@
     </header>
     <h1>Gestionar Mesas</h1>
     <div id="divReiniciar">
-        <a href="borrarSesionesSalas.php?salir=1">
+        <a href="borrarSesionesMesas.php?salir=1">
             <button class="btn btn-danger">Volver</button>
         </a>
         <a href="crearMesa.php">
             <button class="btn btn-success">Crear Mesa</button>
         </a>
-        <a href="borrarSesionesSalas.php?borrar=5">
+        <a href="borrarSesionesMesas.php?borrar=5">
             <button class="btn btn-warning">Reiniciar Filtros</button>
         </a>
     </div>

@@ -5,17 +5,25 @@ if (!isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero
     header('location:../index.php');
     exit();
 }
-if (!isset($_POST['id_tipoSala'])) {
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ./index.php');
     exit();
 } else {
     try {
         // Sanitización de inputs
-        $id = htmlspecialchars(trim($_POST['id_tipoSala']));
-        $id_sala = htmlspecialchars(trim($_POST['id_sala']));
+        $id = trim($_POST['id_tipoSala']);
+        $id_sala = trim($_POST['id_sala']);
 
         // Preparar consulta
-        $query = "SELECT * FROM mesa WHERE id_sala = :id_sala";
+        $query = "SELECT m.*, 
+                r.id_reserva IS NOT NULL AS reservada,
+                r.hora_inicio_reserva,
+                r.hora_final_reserva
+                FROM mesa m
+                LEFT JOIN reservas r 
+                ON m.id_mesa = r.id_mesa 
+                AND NOW() BETWEEN r.hora_inicio_reserva AND r.hora_final_reserva
+                WHERE m.id_sala = :id_sala";
         $stmt = $conn->prepare($query);
         $stmt->bindParam(':id_sala', $id_sala, PDO::PARAM_INT);
         $stmt->execute();
@@ -38,6 +46,10 @@ if (!isset($_POST['id_tipoSala'])) {
         if(isset($_SESSION['reservaRealizada']) && $_SESSION['reservaRealizada']) {
             unset($_SESSION['reservaRealizada']);
             echo "<script>let reservaRealizada = true;</script>";
+        }
+        if(isset($_SESSION['reservaRealizada']) && $_SESSION['reservaRealizada']){
+            echo "<script> let reservaRealizada = true;</script>";
+            unset($_SESSION['reservaRealizada']);
         }
 
         $numero = count($result);
@@ -88,7 +100,10 @@ if (!isset($_POST['id_tipoSala'])) {
                 foreach ($result as $fila) {
                     echo "<div class='col-md-$nuevoNumero mb-4'>"; // Clase Bootstrap para cuatro columnas
                     echo "<div class='container_img'>";
-                    if ($fila['libre'] == 0) {
+                    if($fila['reservada']){
+                        echo "<img class='imagen' src='../img/reservada.png' alt='Reservada'>";
+                        echo "<label class='labelTipo'>Reservada de: {$fila['hora_inicio_reserva']} a {$fila['hora_final_reserva']}</label>";
+                    } else if ($fila['libre'] == 0) {
                 ?>
                         <form class="formImgComedor" action="../procesos/ocupar_mesa.php" method="POST">
                             <input type="hidden" name="id_tipoSala" value="<?php echo $id ?>">
@@ -138,8 +153,8 @@ if (!isset($_POST['id_tipoSala'])) {
                 <?php
                     }
                     echo "</div>";
+                    echo "<a href='reservarMesa.php?id_tipoSala={$id}&id_mesa={$fila['id_mesa']}&id_sala={$fila['id_sala']}'><button class='btn btn-primary'>Reservar</button></a><br>";
                     echo "<label class='labelTipo'> Nº Sillas: " . $fila['num_sillas'] . "</label>";
-                    echo "<a href='reservarMesa.php?id_tipoSala={$id}&id_mesa={$fila['id_mesa']}&id_sala={$fila['id_sala']}'><button class='btn btn-primary'>Reservar</button></a>";
                     echo "</div>";
                 }
 
@@ -225,6 +240,14 @@ if (!isset($_POST['id_tipoSala'])) {
                 Swal.fire({
                     title: "Mesa Desocupada!",
                     text: "La mesa ha sido desocupada exitosamente!",
+                    icon: "success",
+                    confirmButtonText: "Aceptar"
+                });
+            }
+            if(typeof reservaRealizada !== "undefined" && reservaRealizada) {
+                Swal.fire({
+                    title: "Reserva realizada!",
+                    text: "La reserva se ha realizado correctamente!",
                     icon: "success",
                     confirmButtonText: "Aceptar"
                 });
