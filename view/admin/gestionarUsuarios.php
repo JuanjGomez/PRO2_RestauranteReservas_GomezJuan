@@ -222,22 +222,22 @@
             })
         <?php endif;?>
         function confirmarEliminacion(idUsuario) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "Esta acción no se puede deshacer.",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
-            // Redirecciona al enlace de eliminación
-                window.location.href = `../../procesos/eliminarUsuario.php?id=${idUsuario}`
-            }
-        })
-    }
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción no se puede deshacer.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                // Redirecciona al enlace de eliminación
+                    window.location.href = `../../procesos/eliminarUsuario.php?id=${idUsuario}`
+                }
+            })
+        }
     </script>
 </body>
 </html>

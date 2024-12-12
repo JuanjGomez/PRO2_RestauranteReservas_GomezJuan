@@ -65,16 +65,14 @@ $filtrarSalas = isset($_SESSION['tipoSala']);
             </ul>
           </li>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Camarero</a>
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Responsable</a>
             <ul class="dropdown-menu">
               <?php
                 try{
                   $camareroHistorial = 'Camarero';
                   $gerente = htmlspecialchars(trim($_SESSION['rol']));
-                  $sqlCamarero = "SELECT * FROM usuarios u INNER JOIN roles r ON u.id_rol = r.id_rol WHERE nombre_rol = :camarero AND nombre_rol = :gerente";
+                  $sqlCamarero = "SELECT * FROM usuarios u INNER JOIN roles r ON u.id_rol = r.id_rol";
                   $stmt = $conn->prepare($sqlCamarero);//Ejecuta la consulta
-                  $stmt->bindParam(':camarero', $camareroHistorial, PDO::PARAM_STR);
-                  $stmt->bindParam(':gerente', $gerente, PDO::PARAM_STR);
                   $stmt->execute();
                   while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)){
                     $idCamarero = htmlspecialchars($fila['id_usuario']);
@@ -111,7 +109,6 @@ $filtrarSalas = isset($_SESSION['tipoSala']);
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" <?php echo !isset($_SESSION['tipoSala']) ? 'disabled' : ''; ?> href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Salas</a>
             <ul class="dropdown-menu">
-          </li>
           <?php
             try{
               // Comprueba si se ha seleccionado un tipo de sala en la sesión
@@ -136,7 +133,6 @@ $filtrarSalas = isset($_SESSION['tipoSala']);
           ?>
         </ul>
         </li>
-
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle enlace-barra" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Numero Mesa</a>
             <ul class="dropdown-menu scrollable-dropdown">

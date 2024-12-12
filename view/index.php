@@ -78,6 +78,10 @@ if (isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero'
         }
 ?>
             </div>
+            <div>
+                <a href="verReservas.php"><button class="btn btn-info">Ver Reservas</button></a>
+                <?php echo in_array($_SESSION['rol'], ['Gerente']) ? "<a href='admin/viewGerente.php'><button class='btn btn-secondary'>Volver Gerente</button></a>" : "" ?>
+            </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.5/dist/sweetalert2.all.min.js" integrity="sha256-1m4qVbsdcSU19tulVTbeQReg0BjZiW6yGffnlr/NJu4=" crossorigin="anonymous"></script>

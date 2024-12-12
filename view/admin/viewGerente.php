@@ -3,6 +3,11 @@
     if(!isset($_SESSION['id']) && $_SESSION['rol'] !== 'Gerente'){
         header('Location: ../../index.php');
     }
+    if (isset($_SESSION['success']) && $_SESSION['success']) {
+        $user = htmlspecialchars($_SESSION['usuario']);
+        echo "<script>let loginSuccess = true; let user='$user';</script>";
+        unset($_SESSION['success']);
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,7 +68,7 @@
             </div>
             <div class="col-md-3">
                 <div class="container_img grow">
-                    <form class="formImg" action="gestionarMesas.php" method="GET">
+                    <form class="formImg" action="../index.php" method="GET">
                         <button class="botonImg" type="submit"><img src="../../img/rolCamarero.jpg" alt=""></button>
                     </form>
                 </div>

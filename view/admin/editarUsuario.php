@@ -82,11 +82,11 @@
                     </label>
                     <p id="errorNacimiento" class="error"></p>
                     <label for="pwd">Contrasena: 
-                        <input type="text" name="pwd" id="pwd">
+                        <input type="password" name="pwd" id="pwd">
                     </label>
                     <p id="errorPwd" class="error"></p>
                     <label for="rPwd">Repetir Contrasena: 
-                        <input type="text" name="rPwd" id="rPwd">
+                        <input type="password" name="rPwd" id="rPwd">
                     </label>
                     <p id="errorRpwd" class="error"></p>
                 </div>

@@ -22,6 +22,7 @@
     $horaReserva = htmlspecialchars(trim($_POST['horaReserva']));
     $id_tipoSalaDevuelta = htmlspecialchars(trim($_POST['id_tipoSala']));
     $idSalaDevuelta = htmlspecialchars(trim($_POST['id_sala']));
+    $idUser = trim($_SESSION['id']);
 
     // Crear la fecha completa de la reservar (fecha + hora)
     $horaReservaCompleta = $fechaReserva . ' ' . $horaReserva;
@@ -32,6 +33,7 @@
     require_once 'conexion.php';
 
     try{
+        $conn->beginTransaction();
         // Verificar si la hora de reserva ya esta ocupada
         $sqlComprobarHora = "SELECT * FROM reservas
                             WHERE id_mesa = :id_mesa 
@@ -53,7 +55,7 @@
         $sqlInsertReserva = "INSERT INTO reservas (id_usuario, id_mesa, nombre_reserva, fecha_reserva, hora_inicio_reserva, hora_final_reserva)
                             VALUES (:id_usuario, :id_mesa, :nombre_reserva, :fecha_reserva, :hora_reserva, :hora_final_reserva)";
         $stmtInsertReserva = $conn->prepare($sqlInsertReserva);
-        $stmtInsertReserva->bindParam(':id_usuario', $_SESSION['id'], PDO::PARAM_INT);
+        $stmtInsertReserva->bindParam(':id_usuario', $idUser, PDO::PARAM_INT);
         $stmtInsertReserva->bindParam(':id_mesa', $idMesa, PDO::PARAM_INT);
         $stmtInsertReserva->bindParam(':nombre_reserva', $nombreReserva, PDO::PARAM_STR);
         $stmtInsertReserva->bindParam(':fecha_reserva', $horaReservaCompleta, PDO::PARAM_STR);
@@ -61,6 +63,19 @@
         $stmtInsertReserva->bindParam(':hora_final_reserva', $horaFinalReserva, PDO::PARAM_STR);
         $stmtInsertReserva->execute();
 
+        // Insertar la reserva en historial
+        $sqlInsertHistorialReserva = "INSERT INTO historial (id_usuario, id_mesa, hora_inicio, hora_fin) 
+                                    VALUES (:id_usuario, :id_mesa, :hora_inicio, :hora_fin)";
+        $stmtInsertHistorialReserva = $conn->prepare($sqlInsertHistorialReserva);
+        $stmtInsertHistorialReserva->bindParam(':id_usuario', $idUser, PDO::PARAM_INT);
+        $stmtInsertHistorialReserva->bindParam(':id_mesa', $idMesa, PDO::PARAM_INT);
+        $stmtInsertHistorialReserva->bindParam(':hora_inicio', $horaReservaCompleta, PDO::PARAM_STR);
+        $stmtInsertHistorialReserva->bindParam(':hora_fin', $horaFinalReserva, PDO::PARAM_STR);
+        $stmtInsertHistorialReserva->execute();
+
+        // Confirmar la transaccion
+        $conn->commit();
+        // Redireccionar al menu de la mesa
         $_SESSION['reservaRealizada'] = true;
         ?>
         <form action="../view/mesa.php" method="POST" name="form">
@@ -73,6 +88,8 @@
         <?php
         exit();
     } catch(PDOException $e){
+        // Deshacer la transaccion en caso de error
+        $conn->rollBack();
         echo 'Error: ' . $e->getMessage();
         die();
     }

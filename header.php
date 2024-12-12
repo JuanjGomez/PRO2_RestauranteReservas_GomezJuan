@@ -10,6 +10,9 @@
 </head>
   <header>
     <nav>
+        <div id="pequeño2">
+          <img src="../img/logoRestaurante.png" alt="Logo" id="logo2">
+        </div>
         <div class="sesionIniciada">
             <p>Usuario: <?php echo $_SESSION['nombre']?></p>
         </div>
