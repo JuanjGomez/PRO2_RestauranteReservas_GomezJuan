@@ -18,7 +18,7 @@
         </div>
         <div class="cerrarSesion">
           <a id="bug" href="../view/filtros.php">
-            <button type="submit" class="btn btn-light"  id="cerrarSesion">Filtrar</button>
+            <button type="submit" class="btn btn-light"  id="cerrarSesion">Historial</button>
           </a>
             <a href="../procesos/logout.php">
             <button type="submit" class="btn btn-dark" id="cerrarSesion">Cerrar Sesión</button>

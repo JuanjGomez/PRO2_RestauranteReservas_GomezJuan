@@ -49,6 +49,7 @@ if (isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero'
                     ?>
                     <form class="formImg " action="tipoSala.php" method="post">
                         <input type="hidden" name="id_tipoSala" value="<?php echo $fila['id_tipoSala']?>">
+                        <input type="hidden" name="tipoSala" value="<?php echo $fila['tipo_sala'] ?>">
                         <button class="botonImg " type="submit"><img src="../img/terraza 1.webp" alt=""></button>
                     </form>
                     <?php
@@ -58,6 +59,7 @@ if (isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero'
                     ?>
                     <form class="formImg" action="tipoSala.php" method="post">
                         <input type="hidden" name="id_tipoSala" value="<?php echo $fila['id_tipoSala']?>">
+                        <input type="hidden" name="tipoSala" value="<?php echo $fila['tipo_sala'] ?>">
                         <button class="botonImg" type="submit"><img src="../img/comedor1.webp" alt=""></button>
                     </form>
                     <?php
@@ -66,6 +68,7 @@ if (isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero'
                     ?>
                     <form class="formImg" action="tipoSala.php" method="post">
                         <input type="hidden" name="id_tipoSala" value="<?php echo $fila['id_tipoSala']?>">
+                        <input type="hidden" name="tipoSala" value="<?php echo $fila['tipo_sala'] ?>">
                         <button class="botonImg" type="submit"><img src="../img/salapriv.png" alt=""></button>
                     </form>
                     <?php
@@ -80,7 +83,7 @@ if (isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero'
             </div>
             <div>
                 <a href="verReservas.php"><button class="btn btn-info">Ver Reservas</button></a>
-                <?php echo in_array($_SESSION['rol'], ['Gerente']) ? "<a href='admin/viewGerente.php'><button class='btn btn-secondary'>Volver Gerente</button></a>" : "" ?>
+                <?php echo in_array($_SESSION['rol'], ['Gerente']) ? "<button class='btn btn-secondary' onclick='confirmarCambioRol()'>Volver Gerente</button>" : "" ?>
             </div>
         </div>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
@@ -91,6 +94,23 @@ if (isset($_SESSION['id']) || !in_array($_SESSION['rol'], ['Gerente', 'Camarero'
                     title: 'Sesion iniciada',
                     text: "Bienvenido " + user + "!",
                     icon: 'success'
+                })
+            }
+            function confirmarCambioRol() {
+                Swal.fire({
+                    title: '¿Estás seguro?',
+                    text: "Estás a punto de cambiar tu rol a Gerente.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Sí, cambiar',
+                    cancelButtonText: 'Cancelar'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Redirigir al usuario al rol Gerente
+                        window.location.href = 'admin/viewGerente.php';
+                    }
                 })
             }
         </script>

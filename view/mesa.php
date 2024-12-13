@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         // Sanitización de inputs
         $id = trim($_POST['id_tipoSala']);
         $id_sala = trim($_POST['id_sala']);
+        $nombreSala = trim($_POST['nombre_sala']);
 
         // Preparar consulta
         $query = "SELECT m.*, 
@@ -85,12 +86,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
         include '../header.php';
 
         ?>
-        <div id="divMesa">
-            <a href="../view/index.php">
+        <a href="../view/index.php">
                 <button class="btn btn-danger">Volver</button>
             </a>
-            <h1 id="centrar">Selecciona una ubicación!</h1>
-            <p></p>
+        <div id="divMesa">
+            <h1 id="centrar"><?php echo $nombreSala ?></h1>
+            <h3 id="centrar">Selecciona una ubicación!</h3>
         </div>
 
         <div class="container">
@@ -99,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 <?php
                 foreach ($result as $fila) {
                     echo "<div class='col-md-$nuevoNumero mb-4'>"; // Clase Bootstrap para cuatro columnas
-                    echo "<div class='container_img'>";
+                    echo "<div class='container_img text-center'>";
                     if($fila['reservada']){
-                        echo "<img class='imagen' src='../img/reservada.png' alt='Reservada'>";
-                        echo "<label class='labelTipo'>Reservada de: {$fila['hora_inicio_reserva']} a {$fila['hora_final_reserva']}</label>";
+                        echo "<img class='imagen mb-2' src='../img/reservada.png' alt='Reservada'>";
+                        echo "<label class='labelTipo d-block'>Reservada de: {$fila['hora_inicio_reserva']} a {$fila['hora_final_reserva']}</label>";
                     } else if ($fila['libre'] == 0) {
                 ?>
                         <form class="formImgComedor" action="../procesos/ocupar_mesa.php" method="POST">
@@ -111,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                             <input type="hidden" name="id_sala" value="<?php echo $fila['id_sala'] ?>">
                             <input type="hidden" name="num_sillas_real" value="<?php echo $fila['num_sillas'] ?>">
                             <input type="hidden" name="num_sillas" value="<?php echo $fila['num_sillas'] ?>">
-                            <button class="botonImg" type="button" onclick="confirmAction(this.form)"><img class="imagen" src="../img/<?php
+                            <button class="botonImg mb-2" type="button" onclick="confirmAction(this.form)"><img class="imagen" src="../img/<?php
                                                                                                                                         if ($fila['num_sillas'] == 1 || $fila['num_sillas'] == 2) {
                                                                                                                                             echo $fila['libre'] .  2;
                                                                                                                                         } elseif ($fila['num_sillas'] == 3 || $fila['num_sillas'] == 4) {
@@ -135,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                             <input type="hidden" name="id_sala" value="<?php echo $fila['id_sala'] ?>">
                             <input type="hidden" name="num_sillas_real" value="<?php echo $fila['num_sillas'] ?>">
                             <input type="hidden" name="num_sillas" value="<?php echo $fila['num_sillas'] ?>">
-                            <button class="botonImg" type="button" onclick="desocupar(this.form)"><img class="imagen" src="../img/<?php
+                            <button class="botonImg mb-2" type="button" onclick="desocupar(this.form)"><img class="imagen" src="../img/<?php
                                                                                                                                     if ($fila['num_sillas'] == 1 || $fila['num_sillas'] == 2) {
                                                                                                                                         echo $fila['libre'] .  2;
                                                                                                                                     } elseif ($fila['num_sillas'] == 3 || $fila['num_sillas'] == 4) {
@@ -153,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 <?php
                     }
                     echo "</div>";
-                    echo "<a href='reservarMesa.php?id_tipoSala={$id}&id_mesa={$fila['id_mesa']}&id_sala={$fila['id_sala']}'><button class='btn btn-primary'>Reservar</button></a><br>";
+                    echo "<a href='reservarMesa.php?id_tipoSala={$id}&id_mesa={$fila['id_mesa']}&id_sala={$fila['id_sala']}&nombre_sala={$nombreSala}'><button class='btn btn-primary'>Reservar</button></a><br>";
                     echo "<label class='labelTipo'> Nº Sillas: " . $fila['num_sillas'] . "</label>";
                     echo "</div>";
                 }

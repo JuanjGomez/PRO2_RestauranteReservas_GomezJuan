@@ -452,4 +452,15 @@ footer {
     .tabla-usuarios td:nth-child(5) {
         display: none;
     }
+
+    .tabla-salas th:nth-child(3),
+    .tabla-salas td:nth-child(3){
+        display: none;
+    }
+
+    .tabla-mesas th:nth-child(3),
+    .tabla-mesas td:nth-child(3){
+        display: none;
+    }
+
 }

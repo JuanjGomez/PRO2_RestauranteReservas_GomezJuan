@@ -68,7 +68,7 @@
             </div>
             <div class="col-md-3">
                 <div class="container_img grow">
-                    <form class="formImg" action="../index.php" method="GET">
+                    <form class="formImg" action="../index.php" method="GET" onsubmit="return confirmarCambioRol(event)">
                         <button class="botonImg" type="submit"><img src="../../img/rolCamarero.jpg" alt=""></button>
                     </form>
                 </div>
@@ -84,6 +84,24 @@
                 title: 'Sesion iniciada',
                 text: "Bienvenido " + user + "!",
                 icon: 'success'
+            })
+        }
+        function confirmarCambioRol(event) {
+            event.preventDefault(); // Previene el envío del formulario por defecto
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Estás a punto de cambiar tu rol a Camarero.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, cambiar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirigir al usuario al rol Gerente
+                    window.location.href = '../index.php';
+                }
             })
         }
     </script>

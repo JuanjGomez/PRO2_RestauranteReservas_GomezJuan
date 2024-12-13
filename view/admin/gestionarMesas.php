@@ -181,7 +181,7 @@
     </nav>
     <?php
         if($result){
-            echo "<table>";
+            echo "<table class='tabla-mesas'>";
             echo "<thead>";
             echo "<tr>";
             echo "<th>Nº Mesa</th>";

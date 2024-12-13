@@ -223,6 +223,8 @@
                             echo "<td>";
                             if ($puedeEliminar) {
                                 echo "<a href='#' onclick='confirmarEliminacion($idReserva)' class='btn btn-danger'>Eliminar</a>";
+                            } else {
+                                echo "Completada";
                             }
                             echo "</td>";;
                         echo "</tr>";

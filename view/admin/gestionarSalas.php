@@ -22,7 +22,11 @@
     $errorBorrarSala = isset($_SESSION['errorBorrarSala']) && $_SESSION['errorBorrarSala'];
     unset($_SESSION['errorBorrarSala']);
     require_once '../../procesos/conexion.php';
-    require_once '../../procesos/filtrosSalas.php'
+    require_once '../../procesos/filtrosSalas.php';
+    $sqlTotalSalas = "SELECT COUNT(*) AS totalSalas FROM sala";
+    $resultTotal = $conn->prepare($sqlTotalSalas);
+    $resultTotal->execute();
+    $numeroSalas = $resultTotal->fetch()['totalSalas'];
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,9 +77,12 @@
         <a href="borrarSesionesSalas.php?salir=1">
             <button class="btn btn-danger">Volver</button>
         </a>
-        <a href="crearSala.php">
-            <button class="btn btn-success">Crear Sala</button>
-        </a>
+        <!-- Mostrar el botón solo si el número de salas es menor que 15 -->
+        <?php if($numeroSalas < 15) : ?>
+            <a href="crearSala.php">
+                <button class="btn btn-success">Crear Sala</button>
+            </a>
+        <?php endif;?>
         <a href="borrarSesionesSalas.php?borrar=5">
             <button class="btn btn-warning">Reiniciar Filtros</button>
         </a>
@@ -133,7 +140,7 @@
     </nav>
     <?php
         if($resultadosSalas){
-            echo "<table>";
+            echo "<table class='tabla-salas'>";
             echo "<thead>";
             echo "<tr>";
             echo "<th>Nombre</th>";

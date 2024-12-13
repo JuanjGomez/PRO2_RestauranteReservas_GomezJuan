@@ -11,6 +11,7 @@
     $id_tipoSala = htmlspecialchars(trim($_GET['id_tipoSala']));
     $idSala = htmlspecialchars(trim($_GET['id_sala']));
     $idMesa= htmlspecialchars(trim($_GET['id_mesa']));
+    $nombreSala = htmlspecialchars(trim($_GET['nombre_sala']));
     require_once '../procesos/conexion.php';
     try {
         // Consulta para obtener los datos de la mesa
@@ -66,6 +67,7 @@
     <form method="POST" action="mesa.php">
         <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
         <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
+        <input type="hidden" name="nombre_sala" value="<?php echo $nombreSala ?>">
         <button type="submit" class="btn btn-danger">VOLVER</button>
     </form>
     <h3>Reservar Mesa</h3>

@@ -11,6 +11,7 @@ if (!isset($_POST['id_tipoSala'])) {
 } else {
     try{
         $id = htmlspecialchars(trim($_POST['id_tipoSala']));
+        $tipoSala = htmlspecialchars(trim($_POST['tipoSala']));
         $query = "SELECT * FROM sala WHERE id_tipoSala = :id_tipoSala";
         $stmtq = $conn->prepare(query: $query);
         $stmtq->bindParam(':id_tipoSala',$id, PDO::PARAM_INT);
@@ -40,7 +41,8 @@ if (!isset($_POST['id_tipoSala'])) {
             <button class="btn btn-danger">Volver</button>
         </a>
         <div class="container">
-            <h1 id="ubicacion">Selecciona una ubicación!</h1>
+            <h1 id="ubicacion"><?php echo $tipoSala ?>(s)</h1>
+            <h3 id="ubicacion">Selecciona una ubicación!</h3>
             <div class="row"> <!-- Agregado para crear un nuevo row de Bootstrap -->
 
 <?php
@@ -69,6 +71,7 @@ if (!isset($_POST['id_tipoSala'])) {
                     <form class="formImg" action="mesa.php" method="post">
                         <input type="hidden" name="id_sala"  value="<?php echo $fila['id_sala'] ?>">
                         <input type="hidden" name="id_tipoSala"  value="<?php echo $fila['id_tipoSala'] ?>">
+                        <input type="hidden" name="nombre_sala" value="<?php echo $fila['nombre_sala'] ?>">
                         <button class="botonImg" type="submit">
                             <img src="../<?php echo $imagen ?>" alt="<?php echo $fila['nombre_sala'] ?>">
                         </button>
