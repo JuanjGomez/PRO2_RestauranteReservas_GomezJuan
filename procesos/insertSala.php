@@ -14,6 +14,7 @@
     $imagen = $_FILES['imagen'];
 
     try{
+        // Verifica que no halla una sala con el mismo nombre
         $sqlVerificarSala = "SELECT * FROM sala s 
                             INNER JOIN tipo_sala tp ON s.id_tipoSala = tp.id_tipoSala 
                             WHERE s.nombre_sala = :nombreSala";

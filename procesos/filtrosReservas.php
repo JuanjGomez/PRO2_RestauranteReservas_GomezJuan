@@ -125,6 +125,7 @@
             }
         } else if(isset($_GET['query'])){
             $query = "%" . htmlspecialchars(trim($_GET['query'] ?? '')) . "%";  // Manejar el caso de una consulta vacía de forma segura
+            // Consulta para buscar de manera general algun dato de la tabla
             $sqlBusqueda = "SELECT r.id_reserva, r.nombre_reserva, r.hora_inicio_reserva, r.hora_final_reserva, 
                             u.usuario, m.id_mesa, s.nombre_sala, ts.tipo_sala, 
                             CASE 
@@ -144,6 +145,7 @@
             $stmtVerReservas->bindParam(":busqueda", $query, PDO::PARAM_STR);
             $_SESSION['query'] = $_GET['query'] ?? '';
         } else {
+            // Mostrar todos los datos que estan en la talbla
             $sqlVerReservas = "SELECT r.id_reserva, r.nombre_reserva, r.hora_inicio_reserva, r.hora_final_reserva, 
                             u.usuario, m.id_mesa, s.nombre_sala, ts.tipo_sala, 
                             CASE 

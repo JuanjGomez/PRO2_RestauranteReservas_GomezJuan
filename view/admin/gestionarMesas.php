@@ -18,6 +18,15 @@
     unset($_SESSION['successEliminarMesa']);
     require_once '../../procesos/conexion.php';
     require_once '../../procesos/filtrosMesas.php';
+    try{
+        $sqlSaberCantidadMesas = "SELECT COUNT(*) FROM mesa";
+        $stmtSaberCantidadMesas = $conn->prepare($sqlSaberCantidadMesas);
+        $stmtSaberCantidadMesas->execute();
+        $numeroMesas = $stmtSaberCantidadMesas->fetch()['COUNT(*)'];
+    } catch(PDOException $e){
+        echo "Error: " . $e->getMessage();
+        die();
+    }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -69,7 +78,9 @@
             <button class="btn btn-danger">Volver</button>
         </a>
         <a href="crearMesa.php">
-            <button class="btn btn-success">Crear Mesa</button>
+            <?php if($numeroMesas < 60) : ?>
+                <button class="btn btn-success">Crear Mesa</button>
+            <?php endif ?>
         </a>
         <a href="borrarSesionesMesas.php?borrar=5">
             <button class="btn btn-warning">Reiniciar Filtros</button>
@@ -170,10 +181,6 @@
                 </li>
                 <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="gestionarMesas.php?disponible">Disponibles</a></li>
             </ul>
-            <form class="d-flex" role="search" method="GET" action="">
-                <input class="form-control me-2" type="search" name="query" value="<?php echo isset($_SESSION['query']) ? $_SESSION['query'] : '' ?>" placeholder="Buscar" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Buscar</button>
-            </form>
             <div id="resultados">
             </div>
         </div>

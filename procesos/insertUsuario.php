@@ -39,6 +39,7 @@
                 $_SESSION['errorCrearDni'] = true;
             }
             ?>
+            <!-- Si existe uno se reenvia todos los datos que proporciono -->
             <form method="POST" name="usuario" action="../view/admin/crearUsuario.php">
                 <input type="hidden" name="nombre" value="<?= htmlspecialchars($nombre) ?>">
                 <input type="hidden" name="apellido" value="<?= htmlspecialchars($apellido) ?>">

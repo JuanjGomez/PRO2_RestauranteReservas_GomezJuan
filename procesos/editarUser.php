@@ -35,6 +35,7 @@
         $stmtEditarUsuario->bindParam(':direccion', $direccion, PDO::PARAM_STR);
         $stmtEditarUsuario->bindParam(':nacimiento', $fechaDeNacimiento, PDO::PARAM_STR);
         $stmtEditarUsuario->bindParam(':rol', $rol, PDO::PARAM_INT);
+        // Si hay una contrasena se envia en la consulta
         if(!empty($_POST['pwd'])){
             $stmtEditarUsuario->bindParam(':password', $hashedPwd, PDO::PARAM_STR);
         }

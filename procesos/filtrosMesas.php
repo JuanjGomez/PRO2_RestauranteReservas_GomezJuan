@@ -32,6 +32,7 @@
             $_SESSION['salaID'] = $salaID;
         } else if(isset($_GET['numeroSillas'])){
             $numSilla = trim($_GET['numeroSillas']);
+                // Consulta para saber el numero sillas que se ha asignado en los filtros
                 $sqlNumeroSillaMesa = "SELECT * 
                                     FROM mesa m
                                     LEFT JOIN sala s ON m.id_sala = s.id_sala
@@ -48,6 +49,7 @@
                 }
         } else if(isset($_GET['disponible'])){
             $libre = 0;
+            // Consulta para ver las mesas disponibles en ese momento
             if(isset($_SESSION['salaID'])){
                 $sqlDisponibles = "SELECT * 
                                 FROM mesa m
@@ -67,6 +69,7 @@
                 $stmtResultado->bindParam(":libre", $libre, PDO::PARAM_INT);
             }
         } else {
+            // Consulta general para ver obtener todos los datos de la tabla
             $sqlMesas = "SELECT * 
                         FROM mesa m
                         LEFT JOIN sala s ON m.id_sala = s.id_sala

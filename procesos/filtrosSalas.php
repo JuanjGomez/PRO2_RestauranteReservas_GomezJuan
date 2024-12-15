@@ -16,6 +16,7 @@
                             LEFT JOIN tipo_sala tp ON s.id_tipoSala = tp.id_tipoSala
                             LEFT JOIN mesa m ON s.id_sala = m.id_sala
                             LEFT JOIN historial h ON m.id_mesa = h.id_mesa";
+            // Si hay algun tipo de sala especifica a buscar se agrega en la consulta
             if(isset($_SESSION['tipoSala'])){
                 $tipoSalaSumativo = $_SESSION['tipoSala'];
                 $sqlPopularidad .= " WHERE s.id_tipoSala = :tipoSalaSumativo";
@@ -28,6 +29,7 @@
             }
         } else if(isset($_GET['tipoSala'])){
             $tipoSala = htmlspecialchars($_GET['tipoSala']);
+            // Consulta para ver las salas de un tipo específico
             $sqlTiposSlas = "SELECT s.id_sala, s.nombre_sala, tp.tipo_sala, imagen_sala
                             FROM sala s
                             LEFT JOIN tipo_sala tp ON s.id_tipoSala = tp.id_tipoSala
@@ -56,6 +58,7 @@
         } else if(isset($_GET['query'])){
             $query = trim($_GET['query']);
             $queryConcadenado = "%$query%";
+            // Consulta para buscar algun dato que esta en la tabla
             $sqlBusquedaSalas = "SELECT s.id_sala, s.nombre_sala, tp.tipo_sala, imagen_sala
                                 FROM sala s
                                 LEFT JOIN tipo_sala tp ON s.id_tipoSala = tp.id_tipoSala
@@ -65,6 +68,7 @@
             $stmtResultado->bindParam(":busqueda2", $queryConcadenado);
             $_SESSION['querySalas'] = $query;
         } else {
+            // Consulta general para buscar un dato en la tabla
             $sqlSalas = "SELECT s.id_sala, s.nombre_sala, tp.tipo_sala, imagen_sala
                         FROM sala s
                         LEFT JOIN tipo_sala tp ON s.id_tipoSala = tp.id_tipoSala";

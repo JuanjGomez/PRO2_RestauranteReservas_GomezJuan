@@ -112,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                             <input type="hidden" name="id_sala" value="<?php echo $fila['id_sala'] ?>">
                             <input type="hidden" name="num_sillas_real" value="<?php echo $fila['num_sillas'] ?>">
                             <input type="hidden" name="num_sillas" value="<?php echo $fila['num_sillas'] ?>">
+                            <input type="hidden" name="nombre_sala" value="<?php echo $nombreSala ?>">
                             <button class="botonImg mb-2" type="button" onclick="confirmAction(this.form)"><img class="imagen" src="../img/<?php
                                                                                                                                         if ($fila['num_sillas'] == 1 || $fila['num_sillas'] == 2) {
                                                                                                                                             echo $fila['libre'] .  2;
@@ -136,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                             <input type="hidden" name="id_sala" value="<?php echo $fila['id_sala'] ?>">
                             <input type="hidden" name="num_sillas_real" value="<?php echo $fila['num_sillas'] ?>">
                             <input type="hidden" name="num_sillas" value="<?php echo $fila['num_sillas'] ?>">
+                            <input type="hidden" name="nombre_sala" value="<?php echo $nombreSala ?>">
                             <button class="botonImg mb-2" type="button" onclick="desocupar(this.form)"><img class="imagen" src="../img/<?php
                                                                                                                                     if ($fila['num_sillas'] == 1 || $fila['num_sillas'] == 2) {
                                                                                                                                         echo $fila['libre'] .  2;

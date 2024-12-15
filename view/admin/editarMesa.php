@@ -80,7 +80,14 @@
                 </label>
                 <p id="errorSala" class="error"></p>
                 <label for="numSillas">Numero de Sillas: 
-                    <input type="text" name="numSillas" id="numSillas" value="<?php echo $fila['num_sillas']; ?>">
+                    <select name="numSillas" id="numSillas">
+                        <?php
+                            for($i = 2; $i <= 10; $i+=2){
+                                $selectedSillas = $fila['num_sillas'] == $i ? 'selected' : '';
+                                echo "<option value='{$i}'{$selectedSillas}>{$i}</option>";
+                            }
+                        ?>
+                    </select>
                 </label>
                 <p id="errorNumSillas" class="error"></p>
             </div>

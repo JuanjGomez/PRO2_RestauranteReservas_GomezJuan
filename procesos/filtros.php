@@ -179,6 +179,7 @@
             }
         } else if (isset($_GET['query'])) {
             $busqueda = htmlspecialchars(trim($_GET['query']));
+            // Consulta para buscar un dato cualquiera de la tabla
             $sqlBusqueda = "SELECT c.nombre, tp.tipo_sala, s.nombre_sala, m.id_mesa, h.hora_inicio, h.hora_fin 
                             FROM historial h 
                             INNER JOIN usuarios c ON h.id_usuario = c.id_usuario 

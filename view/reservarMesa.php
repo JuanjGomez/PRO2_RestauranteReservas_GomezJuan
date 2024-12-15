@@ -77,6 +77,7 @@
                 <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
                 <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
                 <input type="hidden" name="id_mesa" id="id_mesa" value="<?php echo $idMesa ?>">
+                <input type="hidden" name="nombre_sala" value="<?php echo $nombreSala ?>">
                 <label for="nombreReserva">Nombre de la Reserva 
                     <input type="text" name="nombreReserva" id="nombreReserva" class="form-control">
                 </label>

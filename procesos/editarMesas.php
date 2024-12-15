@@ -14,6 +14,7 @@
     $numerosSillas = trim($_POST['numSillas']);
 
     try{
+        // Consulta para de edicion para la mesa, tanto cambiar de sala como de numero de sillas
         $sqlEditarMesa = "UPDATE mesa 
                         SET id_sala = :id_sala, num_sillas = :num_sillas
                         WHERE id_mesa = :id_mesa";

@@ -13,6 +13,7 @@
     $nombreSala = trim($_POST['nombreS']);
     $tipoSala = trim($_POST['tipoSala']);
     try{
+        //  createonsulta para evitar duplicados de nombre en las salas
         $sqlEvitarDuplicados = "SELECT * FROM sala 
                                 WHERE nombre_sala = :nombreSala AND id_sala != :idSala";
         $stmtEvitarDuplicados = $conn->prepare($sqlEvitarDuplicados);
@@ -39,6 +40,7 @@
         if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
             $nombreImagen = $_FILES['imagen']['name'];
             $tmpImagen = $_FILES['imagen']['tmp_name'];
+            // Extrae la extension que tiene la imagen
             $extension = pathinfo($nombreImagen, PATHINFO_EXTENSION);
         
             // Validar tipo de archivo

@@ -8,6 +8,7 @@
         <form action="mesa.php" method="POST" name="formulario">
             <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
             <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
+            <input type="hidden" name="nombre_sala" value="<?php echo $nombreSala ?>">
         </form>
         <script language="JavaScript">
             document.formulario.submit();
@@ -22,6 +23,7 @@
     $horaReserva = htmlspecialchars(trim($_POST['horaReserva']));
     $id_tipoSalaDevuelta = htmlspecialchars(trim($_POST['id_tipoSala']));
     $idSalaDevuelta = htmlspecialchars(trim($_POST['id_sala']));
+    $nombreSala = trim($_POST['nombre_sala']);
     $idUser = trim($_SESSION['id']);
 
     // Crear la fecha completa de la reservar (fecha + hora)
@@ -47,7 +49,7 @@
 
         if($stmtComprobarHora->rowCount() > 0){
             $_SESSION['errorReserva'] = true;
-            header("Location: ../view/reservarMesa.php?id_tipoSala=".$id_tipoSalaDevuelta."&id_mesa=".$idMesa."&id_sala=".$idSalaDevuelta);
+            header("Location: ../view/reservarMesa.php?id_tipoSala=".$id_tipoSalaDevuelta."&id_mesa=".$idMesa."&id_sala=".$idSalaDevuelta."&nombre_sala=".$nombreSala);
             exit();
         }
 
@@ -81,6 +83,7 @@
         <form action="../view/mesa.php" method="POST" name="form">
             <input type="hidden" name="id_sala" value="<?php echo $idSalaDevuelta ?>">
             <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSalaDevuelta ?>">
+            <input type="hidden" name="nombre_sala" value="<?php echo $nombreSala ?>">
         </form>
         <script language="JavaScript">
             document.form.submit();

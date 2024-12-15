@@ -7,15 +7,11 @@ document.getElementById("sala").onmouseleave = function validaSala() {
     document.getElementById("errorSala").innerHTML = errorSala
     validaForm()
 }
-document.getElementById("numSillas").oninput = function validaNumeroSillas () {
+document.getElementById("numSillas").onmouseleave = function validaNumeroSillas () {
     let numSillas = this.value.trim()
     let errorNumSillas = ""
-    if(numSillas.length == 0 || numSillas == null || /^\s+$/.test(numSillas)){
-        errorNumSillas = "El campo no puede estar vacio."
-    } else if(isNaN(numSillas)){
-        errorNumSillas = "El valor debe ser numerico."
-    } else if(numSillas < 2 || numSillas > 10){
-        errorNumSillas = "El numero de sillas debe ser entre 2 y 10."
+    if(numSillas == ""){
+        errorNumSillas = "Debes seleccionar un numero."
     }
     document.getElementById("errorNumSillas").innerHTML = errorNumSillas
     validaForm()

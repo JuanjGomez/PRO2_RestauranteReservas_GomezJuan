@@ -9,6 +9,7 @@ if (isset($_SESSION['id']) || in_array($_SESSION['rol'], ['Gerente', 'Camarero']
     $idMesa = htmlspecialchars(trim($_POST['id_mesa']));
     $num_sillas = htmlspecialchars(trim($_POST['num_sillas']));
     $num_sillas_real = htmlspecialchars(trim($_POST['num_sillas_real']));
+    $nombreSala = trim($_POST['nombre_sala']);
 
     try {
         $conn->beginTransaction();
@@ -65,6 +66,7 @@ if (isset($_SESSION['id']) || in_array($_SESSION['rol'], ['Gerente', 'Camarero']
         <form action="../view/mesa.php" method="POST" name="formulario">
             <input type="hidden" name="id_tipoSala" value="<?php echo $id_tipoSala ?>">
             <input type="hidden" name="id_sala" value="<?php echo $idSala ?>">
+            <input type="hidden" name="nombre_sala" value="<?php echo $nombreSala ?>">
         </form>
         <script language="JavaScript">
             document.formulario.submit();
